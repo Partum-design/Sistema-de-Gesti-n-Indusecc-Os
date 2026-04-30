@@ -24,6 +24,7 @@ const documentRoutes = require('./routes/documents');
 const roleRoutes = require('./routes/roles');
 const adminRoutes = require('./routes/admin');
 const normRoutes = require('./routes/norms');
+const notificationRoutes = require('./routes/notifications');
 
 const riskRoutes = require('./routes/risks');
 const actionRoutes = require('./routes/actions');
@@ -143,6 +144,7 @@ app.use('/api/risks', riskRoutes);
 app.use('/api/actions', actionRoutes);
 app.use('/api/metrics', metricsRoutes);
 app.use('/api/trainings', trainingRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -695,4 +697,3 @@ if (require.main === module && NODE_ENV !== 'test') {
 }
 
 module.exports = app
-

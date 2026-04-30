@@ -1,130 +1,172 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getPushPublicKey, sendPushTest, subscribeToPush } from '../api/api';
+
+const urlBase64ToUint8Array = (base64String) => {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
+};
 
 export default function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [showInstall, setShowInstall] = useState(false);
+  const [canNotify, setCanNotify] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
-    const handler = (e) => {
-      // Prevenir que el navegador muestre su propio prompt
-      e.preventDefault();
-      // Guardar el evento para dispararlo luego
-      setDeferredPrompt(e);
-      // Mostrar nuestro botón o aviso
-      setIsVisible(true);
+    const onBeforeInstall = (event) => {
+      event.preventDefault();
+      setDeferredPrompt(event);
+      setShowInstall(true);
     };
 
-    window.addEventListener('beforeinstallprompt', handler);
-
-    // Verificar si ya está instalada
+    window.addEventListener('beforeinstallprompt', onBeforeInstall);
     window.addEventListener('appinstalled', () => {
-      setIsVisible(false);
+      setShowInstall(false);
       setDeferredPrompt(null);
-      console.log('PWA instalada con éxito');
     });
 
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+    setCanNotify('serviceWorker' in navigator && 'PushManager' in window);
+
+    return () => window.removeEventListener('beforeinstallprompt', onBeforeInstall);
   }, []);
 
-  const handleInstallClick = async () => {
+  const handleInstall = async () => {
     if (!deferredPrompt) return;
-    
-    // Mostrar el prompt de instalación
     deferredPrompt.prompt();
-    
-    // Esperar la respuesta del usuario
-    const { outcome } = await deferredPrompt.userChoice;
-    console.log(`Usuario respondió a la instalación: ${outcome}`);
-    
-    // Limpiar el prompt guardado
+    await deferredPrompt.userChoice;
     setDeferredPrompt(null);
-    setIsVisible(false);
+    setShowInstall(false);
   };
 
-  if (!isVisible) return null;
+  const handleEnablePush = async () => {
+    if (!canNotify || busy) return;
+    setBusy(true);
+    setMessage('');
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        setMessage('Permiso de notificaciones denegado.');
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.ready;
+      const keyResponse = await getPushPublicKey();
+      const vapidKey = keyResponse?.data?.publicKey;
+      if (!vapidKey) {
+        setMessage('No hay llave publica VAPID configurada.');
+        return;
+      }
+
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(vapidKey),
+      });
+
+      await subscribeToPush(subscription);
+      setMessage('Notificaciones activadas.');
+    } catch (error) {
+      setMessage(error?.response?.data?.message || 'No se pudieron activar notificaciones.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handlePushTest = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await sendPushTest({ title: 'Prueba Push', body: 'Tu dispositivo ya recibe notificaciones.' });
+      setMessage('Notificacion de prueba enviada.');
+    } catch (error) {
+      setMessage(error?.response?.data?.message || 'No se pudo enviar la prueba.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (!showInstall && !canNotify) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: '20px',
-      right: '20px',
-      zIndex: 9999,
-      background: 'linear-gradient(135deg, #8B0000 0%, #5E0000 100%)', // Vino
-      color: 'white',
-      padding: '1rem 1.5rem',
-      borderRadius: '12px',
-      boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '12px',
-      maxWidth: '300px',
-      border: '1px solid rgba(201, 168, 76, 0.3)', // Borde sutil dorado
-      animation: 'slideUp 0.5s ease-out'
-    }}>
-      <style>
-        {`
-          @keyframes slideUp {
-            from { transform: translateY(100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-          }
-        `}
-      </style>
-      
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <div style={{ 
-          width: '40px', 
-          height: '40px', 
-          background: 'var(--gold)', 
-          borderRadius: '8px', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          color: '#8B0000',
-          fontSize: '1.2rem'
-        }}>
-          📲
-        </div>
+    <div style={styles.wrapper}>
+      <div style={styles.header}>
+        <img src="/Logotipo-07.png" alt="Logo" style={styles.logo} />
         <div>
-          <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>Instalar Indusecc OS</div>
-          <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>Acceso rápido desde tu pantalla de inicio</div>
+          <div style={styles.title}>INDUSECC PWA</div>
+          <div style={styles.subtitle}>Instala y activa notificaciones push</div>
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '8px' }}>
-        <button 
-          onClick={() => setIsVisible(false)}
-          style={{
-            flex: 1,
-            background: 'rgba(255,255,255,0.1)',
-            border: 'none',
-            color: 'white',
-            padding: '8px',
-            borderRadius: '6px',
-            fontSize: '0.8rem',
-            cursor: 'pointer',
-            fontWeight: 600
-          }}
-        >
-          Después
-        </button>
-        <button 
-          onClick={handleInstallClick}
-          style={{
-            flex: 2,
-            background: 'var(--gold)', // Dorado
-            border: 'none',
-            color: '#8B0000',
-            padding: '8px',
-            borderRadius: '6px',
-            fontSize: '0.8rem',
-            cursor: 'pointer',
-            fontWeight: 700,
-            boxShadow: '0 2px 8px rgba(201, 168, 76, 0.4)'
-          }}
-        >
-          Instalar Ahora
-        </button>
+      <div style={styles.actions}>
+        {showInstall && (
+          <button type="button" onClick={handleInstall} style={styles.primary} disabled={busy}>
+            Instalar app
+          </button>
+        )}
+        {canNotify && (
+          <button type="button" onClick={handleEnablePush} style={styles.secondary} disabled={busy}>
+            Activar notificaciones
+          </button>
+        )}
+        {canNotify && (
+          <button type="button" onClick={handlePushTest} style={styles.ghost} disabled={busy}>
+            Enviar prueba
+          </button>
+        )}
       </div>
+
+      {message ? <div style={styles.message}>{message}</div> : null}
     </div>
   );
 }
+
+const styles = {
+  wrapper: {
+    position: 'fixed',
+    right: 16,
+    bottom: 16,
+    zIndex: 10000,
+    width: 'min(340px, calc(100vw - 24px))',
+    background: '#4c0910',
+    color: '#fff',
+    borderRadius: 14,
+    border: '1px solid rgba(255,255,255,0.15)',
+    boxShadow: '0 18px 30px rgba(0,0,0,0.25)',
+    padding: 14,
+  },
+  header: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 },
+  logo: { width: 38, height: 38, objectFit: 'cover', borderRadius: 8, background: '#fff' },
+  title: { fontWeight: 700, fontSize: 14 },
+  subtitle: { fontSize: 12, opacity: 0.88 },
+  actions: { display: 'grid', gap: 8 },
+  primary: {
+    border: 'none',
+    borderRadius: 8,
+    padding: '8px 10px',
+    background: '#d7b15c',
+    color: '#4c0910',
+    fontWeight: 700,
+    cursor: 'pointer',
+  },
+  secondary: {
+    border: 'none',
+    borderRadius: 8,
+    padding: '8px 10px',
+    background: '#fff',
+    color: '#4c0910',
+    fontWeight: 700,
+    cursor: 'pointer',
+  },
+  ghost: {
+    border: '1px solid rgba(255,255,255,0.35)',
+    borderRadius: 8,
+    padding: '8px 10px',
+    background: 'transparent',
+    color: '#fff',
+    fontWeight: 700,
+    cursor: 'pointer',
+  },
+  message: { marginTop: 10, fontSize: 12, opacity: 0.92 },
+};

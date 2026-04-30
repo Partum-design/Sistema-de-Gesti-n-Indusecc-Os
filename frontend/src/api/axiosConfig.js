@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { enqueueOfflineRequest } from '../utils/offlineQueue';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api/',
@@ -8,6 +9,23 @@ console.log(`[Axios Config] API Base: ${api.defaults.baseURL}`);
 
 api.interceptors.request.use(
   (config) => {
+    const method = (config.method || 'get').toLowerCase();
+    const isWrite = ['post', 'put', 'patch', 'delete'].includes(method);
+    if (isWrite && navigator && navigator.onLine === false) {
+      enqueueOfflineRequest(config);
+      return Promise.reject({
+        isOfflineQueued: true,
+        response: {
+          status: 202,
+          data: {
+            success: true,
+            queued: true,
+            message: 'Accion guardada. Se enviara automaticamente al volver internet.',
+          },
+        },
+      });
+    }
+
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -20,6 +38,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error?.isOfflineQueued && error?.response) {
+      return Promise.resolve(error.response);
+    }
+
     const { response } = error;
 
     if (response && response.status === 401) {

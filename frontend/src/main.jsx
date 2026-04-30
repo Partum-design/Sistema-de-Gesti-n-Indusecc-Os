@@ -1,13 +1,12 @@
-import { StrictMode } from 'react'
+﻿import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './styles/globals.css'
 import App from './App.jsx'
-// IMPORTA EL PROVIDER AQUÍ
-import { AuthProvider } from './context/AuthContext' 
+import { AuthProvider } from './context/AuthContext'
+import { setupOfflineQueueSync } from './utils/offlineQueue'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {/* 👉 ENVUELVE LA APP CON EL PROVIDER */}
     <AuthProvider>
       <App />
     </AuthProvider>
@@ -21,3 +20,5 @@ if ('serviceWorker' in navigator) {
     })
   })
 }
+
+setupOfflineQueueSync()
