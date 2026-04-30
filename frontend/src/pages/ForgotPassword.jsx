@@ -17,16 +17,8 @@ export default function ForgotPassword() {
 
     try {
       setLoading(true)
-      const res = await forgotPasswordRequest(email)
-      
-      // En modo test, capturamos el token para facilitar la prueba al usuario
-      if (res.data.testToken) {
-         console.log('TEST TOKEN:', res.data.testToken)
-         toast('Token enviado (revisa consola para modo test)', 'ok')
-      } else {
-         toast('Se ha enviado un enlace a tu correo', 'ok')
-      }
-      
+      await forgotPasswordRequest(email)
+      toast('Se ha enviado un enlace a tu correo', 'ok')
     } catch (error) {
       toast(error.response?.data?.message || 'Error al procesar solicitud', 'err')
     } finally {

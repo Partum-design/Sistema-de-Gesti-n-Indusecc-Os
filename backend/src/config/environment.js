@@ -15,6 +15,7 @@ const CORS_ORIGIN = process.env.CORS_ORIGIN
 const EMAIL_SERVICE = process.env.EMAIL_SERVICE || 'gmail';
 const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
+const EMAIL_PASS = process.env.EMAIL_PASS;
 const RATE_LIMIT_WINDOW_MS = parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000; // 15 minutos
 const RATE_LIMIT_MAX_REQUESTS = parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100;
 const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
@@ -35,6 +36,7 @@ module.exports = {
   EMAIL_SERVICE,
   EMAIL_USER,
   EMAIL_PASSWORD,
+  EMAIL_PASS,
   RATE_LIMIT_WINDOW_MS,
   RATE_LIMIT_MAX_REQUESTS,
   LOG_LEVEL,

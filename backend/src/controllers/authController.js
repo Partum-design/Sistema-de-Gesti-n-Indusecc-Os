@@ -158,6 +158,9 @@ const forgotPassword = async (req, res) => {
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
       await user.save();
+      if (err.message === 'EMAIL_NOT_CONFIGURED') {
+        return res.status(503).json({ message: 'El servicio de correo no esta configurado todavia' });
+      }
       return res.status(500).json({ message: 'No se pudo enviar el correo, intente mÃ¡s tarde' });
     }
 
@@ -171,6 +174,14 @@ const resetPassword = async (req, res) => {
   try {
     const { password } = req.body;
     const { token } = req.params;
+
+    if (!password || password.length < 8) {
+      return res.status(400).json({ message: 'La contraseÃ±a debe tener al menos 8 caracteres' });
+    }
+
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+      return res.status(400).json({ message: 'La contraseÃ±a debe contener mayÃºsculas, minÃºsculas y nÃºmeros' });
+    }
 
     const resetPasswordToken = crypto
       .createHash('sha256')
