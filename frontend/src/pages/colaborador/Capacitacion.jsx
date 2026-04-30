@@ -108,9 +108,16 @@ export default function Capacitacion() {
   const handleDownloadCertificate = async (certificateId) => {
     try {
       const response = await downloadCertificate(certificateId)
-      if (response.data?.success) {
-        toast('Certificado descargado exitosamente', 'ok')
-      }
+      const blob = new Blob([response.data], { type: 'application/pdf' })
+      const fileUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = fileUrl
+      link.download = `certificado-${certificateId}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(fileUrl)
+      toast('Certificado descargado exitosamente', 'ok')
     } catch (err) {
       console.error('Error downloading certificate:', err)
       toast('Error al descargar certificado', 'err')

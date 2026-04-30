@@ -103,7 +103,7 @@ export const getUserPerformance = () => api.get('metrics/performance');
 export const getUserTrainings = () => api.get('trainings');
 export const getUserCertificates = () => api.get('trainings/certificates');
 export const updateTrainingProgress = (id, data) => api.put(`trainings/${id}/progress`, data);
-export const downloadCertificate = (id) => api.get(`trainings/certificates/${id}/download`);
+export const downloadCertificate = (id) => api.get(`trainings/certificates/${id}/download`, { responseType: 'blob' });
 export const createSampleTrainings = () => api.post('trainings/sample');
 export const getAdminTrainings = (queryParams = {}) => api.get('trainings/admin/all', { params: queryParams });
 export const createAdminTraining = (data) => api.post('trainings/admin', data);

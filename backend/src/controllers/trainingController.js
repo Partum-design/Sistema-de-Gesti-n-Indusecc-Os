@@ -3,6 +3,7 @@ const Certificate = require('../models/Certificate');
 const User = require('../models/User');
 const Configuration = require('../models/Configuration');
 const logger = require('../utils/logger');
+const PDFDocument = require('pdfkit');
 
 const CERTIFICATE_SETTINGS_KEY = 'certificate_settings';
 const CERTIFICATE_SEQUENCE_KEY = 'certificate_sequence';
@@ -203,30 +204,65 @@ const downloadCertificate = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
 
-    const certificate = await Certificate.findOne({ _id: id, userId, status: 'Activo' });
+    const certificate = await Certificate.findOne({ _id: id, userId, status: 'Activo' }).populate('userId', 'name email');
 
     if (!certificate) {
       return res.status(404).json({ success: false, message: 'Certificado no encontrado' });
     }
+    const traineeName = certificate.userId?.name || 'Colaborador';
+    const issueDate = new Date(certificate.issueDate).toLocaleDateString('es-MX');
+    const expiryDate = certificate.expiryDate ? new Date(certificate.expiryDate).toLocaleDateString('es-MX') : 'N/A';
+    const fileName = `certificado-${certificate.certificateNumber}.pdf`;
 
-    res.json({
-      success: true,
-      data: {
-        certificate: {
-          _id: certificate._id,
-          title: certificate.title,
-          module: certificate.module,
-          score: certificate.score,
-          issueDate: certificate.issueDate,
-          certificateNumber: certificate.certificateNumber,
-          issuedByName: certificate.issuedByName,
-          issuedByRole: certificate.issuedByRole,
-          signatureImageUrl: certificate.signatureImageUrl,
-          sealImageUrl: certificate.sealImageUrl,
-        },
-        downloadUrl: `/api/trainings/certificates/${certificate._id}/download`,
-      },
-    });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=\"${fileName}\"`);
+
+    const doc = new PDFDocument({ size: 'A4', margin: 50 });
+    doc.pipe(res);
+
+    doc.rect(35, 35, 525, 770).lineWidth(2).stroke('#8B0000');
+    doc.fontSize(26).fillColor('#8B0000').text('CERTIFICADO', { align: 'center' });
+    doc.moveDown(0.4);
+    doc.fontSize(14).fillColor('#444444').text('Sistema de Gestion de Calidad INDUSECC', { align: 'center' });
+    doc.moveDown(1.5);
+    doc.fontSize(12).fillColor('#222222').text('Se certifica que:', { align: 'center' });
+    doc.moveDown(0.4);
+    doc.fontSize(22).fillColor('#111111').text(traineeName, { align: 'center' });
+    doc.moveDown(1);
+    doc.fontSize(12).fillColor('#222222').text('ha completado satisfactoriamente la capacitacion:', { align: 'center' });
+    doc.moveDown(0.4);
+    doc.fontSize(17).fillColor('#8B0000').text(certificate.title, { align: 'center' });
+    doc.moveDown(0.2);
+    doc.fontSize(12).fillColor('#333333').text(certificate.module, { align: 'center' });
+    doc.moveDown(1.2);
+    doc.fontSize(11).fillColor('#222222').text(`Folio: ${certificate.certificateNumber}`, { align: 'center' });
+    doc.text(`Fecha de emision: ${issueDate}`, { align: 'center' });
+    doc.text(`Vigencia hasta: ${expiryDate}`, { align: 'center' });
+    doc.text(`Calificacion: ${certificate.score}/100`, { align: 'center' });
+
+    const signatureY = 650;
+    if (certificate.signatureImageUrl && certificate.signatureImageUrl.startsWith('data:image')) {
+      const base64Signature = certificate.signatureImageUrl.split(',')[1];
+      if (base64Signature) {
+        const signatureBuffer = Buffer.from(base64Signature, 'base64');
+        doc.image(signatureBuffer, 110, signatureY - 55, { fit: [170, 60] });
+      }
+    }
+    if (certificate.sealImageUrl && certificate.sealImageUrl.startsWith('data:image')) {
+      const base64Seal = certificate.sealImageUrl.split(',')[1];
+      if (base64Seal) {
+        const sealBuffer = Buffer.from(base64Seal, 'base64');
+        doc.image(sealBuffer, 390, signatureY - 60, { fit: [110, 110] });
+      }
+    }
+
+    doc.moveTo(90, signatureY).lineTo(280, signatureY).stroke('#444444');
+    doc.fontSize(10).fillColor('#222222').text(certificate.issuedByName || 'Administrador INDUSECC', 90, signatureY + 5, { width: 190, align: 'center' });
+    doc.fontSize(9).fillColor('#555555').text(certificate.issuedByRole || 'Administrador', 90, signatureY + 20, { width: 190, align: 'center' });
+    doc.moveTo(370, signatureY).lineTo(510, signatureY).stroke('#444444');
+    doc.fontSize(10).fillColor('#222222').text('Sello institucional', 370, signatureY + 8, { width: 140, align: 'center' });
+
+    doc.end();
   } catch (error) {
     logger.error('Error al descargar certificado:', error);
     res.status(500).json({ success: false, message: 'Error al descargar certificado', code: 'DOWNLOAD_CERTIFICATE_ERROR' });
