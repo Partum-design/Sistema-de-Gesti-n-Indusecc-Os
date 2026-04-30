@@ -11,6 +11,7 @@ import { useContext } from 'react'
 import { AuthContext } from './context/AuthContext'
 import ProtectedRoute from './routes/ProtectedRoute'
 import PWAInstallPrompt from './components/PWAInstallPrompt'
+import FirstTimeTour from './components/FirstTimeTour'
 
 
 
@@ -63,6 +64,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <PWAInstallPrompt />
+      <FirstTimeTour />
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         
