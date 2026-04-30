@@ -2,8 +2,7 @@ const Document = require('../models/Document');
 const logger = require('../utils/logger');
 const fs = require('fs');
 const path = require('path');
-
-const uploadsDir = path.join(__dirname, '../../uploads');
+const { getUploadsDir } = require('../utils/uploads');
 
 const resolveDocumentFields = (req) => {
   const uploadedFile = req.file;
@@ -207,7 +206,7 @@ const deleteDocument = async (req, res) => {
       });
     }
 
-    const filePath = path.join(uploadsDir, document.filename);
+    const filePath = path.join(getUploadsDir(), document.filename);
     if (document.filename && fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
@@ -240,7 +239,7 @@ const downloadDocument = async (req, res) => {
       });
     }
 
-    const filePath = path.join(uploadsDir, document.filename);
+    const filePath = path.join(getUploadsDir(), document.filename);
 
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({
@@ -277,7 +276,7 @@ const viewDocument = async (req, res) => {
       });
     }
 
-    const filePath = path.join(uploadsDir, document.filename);
+    const filePath = path.join(getUploadsDir(), document.filename);
 
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({
