@@ -1,0 +1,48 @@
+{
+  "name": "indusecc-backend",
+  "version": "2.0.0",
+  "description": "Backend profesional para la plataforma INDUSECC",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "set NODE_ENV=production&& node src/server.js",
+    "dev": "set NODE_ENV=development&& nodemon src/server.js",
+    "check:db": "node scripts/dbCheck.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "indusecc",
+    "auditoria",
+    "backend",
+    "express",
+    "mongodb"
+  ],
+  "author": "INDUSECC Team",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.1.1",
+    "mongoose": "^9.4.1",
+    "morgan": "^1.10.0",
+    "multer": "^2.1.1",
+    "nodemailer": "^8.0.5",
+    "nodemon": "^3.1.14"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
