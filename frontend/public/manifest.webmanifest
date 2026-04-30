@@ -1,0 +1,38 @@
+{
+  "name": "Sistema Operativo de Gestion",
+  "short_name": "Sistema Gestion",
+  "description": "Sistema Operativo de Gestion Indusecc",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#3d0e11",
+  "theme_color": "#8B0000",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "1000x1000",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo%20pwa.png",
+      "sizes": "300x117",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Abrir Sistema",
+      "short_name": "Sistema",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/favicon.png",
+          "sizes": "1000x1000",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

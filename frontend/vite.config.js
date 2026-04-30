@@ -1,14 +1,13 @@
-import { defineConfig } from 'vite'
+﻿import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    // PWA plugin removido temporalmente por incompatibilidad con Vite 8
-    // Para activar PWA en el futuro, usar una versión compatible de vite-plugin-pwa
+    // PWA configurada de forma nativa con manifest + service worker en /public
   ],
   build: {
-    cssMinify: false, // Deshabilitar minificación CSS para evitar problemas con lightningcss
+    cssMinify: false, // Deshabilitar minificacion CSS para evitar problemas con lightningcss
   },
 })
