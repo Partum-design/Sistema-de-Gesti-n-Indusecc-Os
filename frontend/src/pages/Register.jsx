@@ -50,8 +50,8 @@ export default function Register() {
         <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(to top,var(--red-k) 0%,rgba(61,14,17,.82) 40%,rgba(30,6,8,.4) 100%)' }} />
         <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, zIndex: 10, background: 'linear-gradient(to bottom,transparent 0%,var(--red-b) 30%,var(--gold) 70%,transparent 100%)' }} />
         <div style={{ position: 'relative', zIndex: 5, maxWidth: 600, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          <div style={{ width: 64, height: 64, background: 'linear-gradient(135deg,var(--red-m),var(--red))', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem', border: '1px solid rgba(201,168,76,.3)' }}>
-            <InduseccLogo alt="Indusecc" style={{ padding: 10 }} />
+          <div style={{ width: 180, margin: '0 auto 2rem' }}>
+            <InduseccLogo alt="Indusecc" style={{ width: '100%', height: 'auto', filter: 'drop-shadow(0 10px 18px rgba(0,0,0,.35))' }} />
           </div>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.4rem,4vw,4rem)', fontWeight: 900, lineHeight: .95, letterSpacing: '-.02em', color: '#fff', marginBottom: '1.5rem' }}>
             Únete al<br />

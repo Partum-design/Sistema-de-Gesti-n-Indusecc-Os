@@ -46,7 +46,7 @@ export default function ConsultorLayout() {
       <aside className={`sidebar${sidebarOpen ? ' open' : ''}`}>
         <div className="sb-brand">
           <div className="sb-logo-box">
-            <div className="sb-logo-fb" aria-label="Indusecc">
+            <div className="sb-logo-fb sb-logo-img" aria-label="Indusecc">
               <InduseccLogo alt="Indusecc" />
             </div>
           </div>

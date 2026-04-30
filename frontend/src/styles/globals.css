@@ -41,11 +41,14 @@ a { text-decoration: none; color: inherit; }
 .sidebar::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg,rgba(123,30,34,.3),transparent 50%); }
 .sidebar::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom,transparent,rgba(201,168,76,.3) 30%,rgba(201,168,76,.3) 70%,transparent); }
 .sb-brand { position: relative; z-index: 1; padding: 1.1rem 1.2rem 1rem; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(201,168,76,.12); }
-.sb-logo-box { width: 38px; height: 38px; flex-shrink: 0; position: relative; }
-.sb-logo-fb { width: 38px; height: 38px; background: linear-gradient(135deg,var(--red-m),var(--red)); border-radius: 6px; display: flex; align-items: center; justify-content: center; position: relative; }
+.sb-logo-box { width: 46px; height: 46px; flex-shrink: 0; position: relative; }
+.sb-logo-fb { width: 46px; height: 46px; background: linear-gradient(135deg,var(--red-m),var(--red)); border-radius: 6px; display: flex; align-items: center; justify-content: center; position: relative; }
 .sb-logo-fb::after { content: ''; position: absolute; inset: -2px; border: 1px solid rgba(201,168,76,.4); border-radius: 7px; pointer-events: none; }
 .sb-logo-fb span { font-family: 'Playfair Display', serif; font-size: .85rem; font-weight: 900; color: var(--gold-l); position: relative; z-index: 1; }
-.sb-logo-fb img { width: 100%; height: 100%; object-fit: contain; padding: 6px; box-sizing: border-box; position: relative; z-index: 1; }
+.sb-logo-fb img { width: 100%; height: 100%; object-fit: contain; box-sizing: border-box; position: relative; z-index: 1; }
+.sb-logo-img { background: transparent; }
+.sb-logo-img::after { display: none; }
+.sb-logo-img img { padding: 0; }
 .sb-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 900; color: #fff; line-height: 1.1; }
 .sb-name em { color: var(--gold-l); font-style: italic; font-weight: 400; font-size: .92rem; }
 .sb-sub { font-size: .62rem; color: rgba(255,255,255,.6); letter-spacing: .07em; margin-top: 1px; }

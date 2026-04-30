@@ -213,8 +213,8 @@ export default function Login() {
 
         <div style={{ position: 'relative', zIndex: 5, maxWidth: 600, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           <div style={{ marginBottom: '2.5rem' }}>
-            <div style={{ width: 64, height: 64, background: 'linear-gradient(135deg,var(--red-m),var(--red))', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto', border: '1px solid rgba(201,168,76,.3)' }}>
-              <InduseccLogo alt="Indusecc" style={{ padding: 10 }} />
+            <div style={{ width: 180, margin: '0 auto' }}>
+              <InduseccLogo alt="Indusecc" style={{ width: '100%', height: 'auto', filter: 'drop-shadow(0 10px 18px rgba(0,0,0,.35))' }} />
             </div>
           </div>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.4rem,4vw,5rem)', fontWeight: 900, lineHeight: .95, letterSpacing: '-.02em', color: '#fff', marginBottom: '1.5rem' }}>
