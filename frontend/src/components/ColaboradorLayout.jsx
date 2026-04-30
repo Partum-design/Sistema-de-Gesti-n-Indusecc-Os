@@ -5,6 +5,7 @@ import NotificationsPanel from './NotificationsPanel'
 import { notificationsByRole } from '../utils/notificationsData'
 import { getInitials, formatRole } from '../utils/userHelpers'
 import { AuthContext } from '../context/AuthContext'
+import InduseccLogo from './InduseccLogo'
 
 const navItems = [
   { section: 'Principal' },
@@ -52,7 +53,11 @@ export default function ColaboradorLayout() {
       <div className={`sb-overlay${sidebarOpen ? ' active' : ''}`} onClick={() => setSidebarOpen(false)} />
       <aside className={`sidebar${sidebarOpen ? ' open' : ''}`}>
         <div className="sb-brand">
-          <div className="sb-logo-box"><div className="sb-logo-fb"><span>IO</span></div></div>
+          <div className="sb-logo-box">
+            <div className="sb-logo-fb" aria-label="Indusecc">
+              <InduseccLogo alt="Indusecc" />
+            </div>
+          </div>
           <div><div className="sb-name">Indusecc <em>SO</em></div><div className="sb-sub">Colaborador</div></div>
         </div>
         <nav className="sb-nav">

@@ -4,6 +4,7 @@ import { ToastContainer } from './Toast'
 import NotificationsPanel from './NotificationsPanel'
 import { getInitials, formatRole } from '../utils/userHelpers'
 import { AuthContext } from '../context/AuthContext'
+import InduseccLogo from './InduseccLogo'
 
 const navItems = [
   { section: 'Control Global' },
@@ -43,8 +44,8 @@ export default function SuperAdminLayout() {
       <aside className={`sidebar${sidebarOpen ? ' open' : ''}`}>
         <div className="sb-brand">
           <div className="sb-logo-box">
-            <div className="sb-logo-fb">
-              <span>SA</span>
+            <div className="sb-logo-fb" aria-label="Indusecc">
+              <InduseccLogo alt="Indusecc" />
             </div>
           </div>
           <div>
@@ -195,4 +196,3 @@ export default function SuperAdminLayout() {
     </div>
   )
 }
-

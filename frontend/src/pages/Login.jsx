@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 // 1. Importa tu contexto y la función de la API
 import { AuthContext } from '../context/AuthContext'
 import { loginRequest } from '../api/auth' 
+import InduseccLogo from '../components/InduseccLogo'
 
 class Particle {
   constructor(canvas) {
@@ -213,7 +214,7 @@ export default function Login() {
         <div style={{ position: 'relative', zIndex: 5, maxWidth: 600, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           <div style={{ marginBottom: '2.5rem' }}>
             <div style={{ width: 64, height: 64, background: 'linear-gradient(135deg,var(--red-m),var(--red))', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto', border: '1px solid rgba(201,168,76,.3)' }}>
-              <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.6rem', fontWeight: 900, color: 'var(--gold-l)' }}>IO</span>
+              <InduseccLogo alt="Indusecc" style={{ padding: 10 }} />
             </div>
           </div>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.4rem,4vw,5rem)', fontWeight: 900, lineHeight: .95, letterSpacing: '-.02em', color: '#fff', marginBottom: '1.5rem' }}>
