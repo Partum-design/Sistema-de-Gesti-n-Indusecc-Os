@@ -107,6 +107,9 @@ export const createSampleTrainings = () => api.post('trainings/sample');
 export const getAdminTrainings = (queryParams = {}) => api.get('trainings/admin/all', { params: queryParams });
 export const createAdminTraining = (data) => api.post('trainings/admin', data);
 export const updateAdminTraining = (id, data) => api.put(`trainings/admin/${id}`, data);
+export const approveAdminTraining = (id, data = {}) => api.post(`trainings/admin/${id}/approve`, data);
+export const getCertificateSettings = () => api.get('trainings/admin/certificate-settings');
+export const updateCertificateSettings = (data) => api.put('trainings/admin/certificate-settings', data);
 
 // Notificaciones Push
 export const getPushPublicKey = () => api.get('notifications/public-key');

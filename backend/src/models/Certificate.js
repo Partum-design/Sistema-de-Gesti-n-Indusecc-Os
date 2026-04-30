@@ -48,6 +48,22 @@ const certificateSchema = new mongoose.Schema({
     enum: ['Activo', 'Expirado', 'Revocado'],
     default: 'Activo'
   },
+  issuedByName: {
+    type: String,
+    trim: true
+  },
+  issuedByRole: {
+    type: String,
+    trim: true
+  },
+  signatureImageUrl: {
+    type: String,
+    trim: true
+  },
+  sealImageUrl: {
+    type: String,
+    trim: true
+  },
   createdAt: {
     type: Date,
     default: Date.now

@@ -11,6 +11,9 @@ const {
   getAdminTrainings,
   createTrainingByAdmin,
   updateTrainingByAdmin,
+  approveTrainingByAdmin,
+  getCertificateSettingsAdmin,
+  updateCertificateSettingsAdmin,
 } = require('../controllers/trainingController');
 
 // Todas las rutas requieren autenticación
@@ -35,5 +38,8 @@ router.post('/sample', createSampleTrainings);
 router.get('/admin/all', authorize('ADMIN', 'SUPER_ADMIN'), getAdminTrainings);
 router.post('/admin', authorize('ADMIN', 'SUPER_ADMIN'), createTrainingByAdmin);
 router.put('/admin/:id', authorize('ADMIN', 'SUPER_ADMIN'), updateTrainingByAdmin);
+router.post('/admin/:id/approve', authorize('ADMIN', 'SUPER_ADMIN'), approveTrainingByAdmin);
+router.get('/admin/certificate-settings', authorize('ADMIN', 'SUPER_ADMIN'), getCertificateSettingsAdmin);
+router.put('/admin/certificate-settings', authorize('ADMIN', 'SUPER_ADMIN'), updateCertificateSettingsAdmin);
 
 module.exports = router;

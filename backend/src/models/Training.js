@@ -22,7 +22,7 @@ const trainingSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Pendiente', 'En proceso', 'Completado'],
+    enum: ['Pendiente', 'En proceso', 'Pendiente de aprobacion', 'Completado'],
     default: 'Pendiente'
   },
   progress: {

@@ -1,11 +1,19 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { toast } from '../../components/Toast'
-import { createAdminTraining, getAdminTrainings, getUsers, updateAdminTraining } from '../../api/api'
+import {
+  approveAdminTraining,
+  createAdminTraining,
+  getAdminTrainings,
+  getCertificateSettings,
+  getUsers,
+  updateAdminTraining,
+  updateCertificateSettings,
+} from '../../api/api'
 
 export default function CapacitacionesAdmin() {
   const [trainings, setTrainings] = useState([])
   const [users, setUsers] = useState([])
-  const [stats, setStats] = useState({ total: 0, completed: 0, inProgress: 0, pending: 0 })
+  const [stats, setStats] = useState({ total: 0, completed: 0, inProgress: 0, pending: 0, pendingApproval: 0 })
   const [statusFilter, setStatusFilter] = useState('')
   const [loading, setLoading] = useState(true)
   const [form, setForm] = useState({
@@ -15,20 +23,31 @@ export default function CapacitacionesAdmin() {
     assignedTo: '',
     scheduledDate: '',
   })
+  const [certSettings, setCertSettings] = useState({
+    prefix: 'CERT',
+    startSequence: 1,
+    validityDays: 365,
+    issuerName: 'Administrador INDUSECC',
+    issuerRole: 'Administrador',
+    signatureImageUrl: '',
+    sealImageUrl: '',
+  })
 
   const loadData = async (status = '') => {
     setLoading(true)
     try {
-      const [trainingsRes, usersRes] = await Promise.all([
+      const [trainingsRes, usersRes, settingsRes] = await Promise.all([
         getAdminTrainings(status ? { status } : {}),
         getUsers(),
+        getCertificateSettings(),
       ])
 
       const trainingsData = trainingsRes.data?.data?.trainings || []
       const usersData = usersRes.data?.data?.users || usersRes.data?.data || []
       setTrainings(trainingsData)
-      setStats(trainingsRes.data?.data?.stats || { total: 0, completed: 0, inProgress: 0, pending: 0 })
+      setStats(trainingsRes.data?.data?.stats || { total: 0, completed: 0, inProgress: 0, pending: 0, pendingApproval: 0 })
       setUsers(usersData.filter((user) => ['COLABORADOR', 'CONSULTOR'].includes(user.role)))
+      if (settingsRes.data?.data) setCertSettings(settingsRes.data.data)
     } catch (error) {
       console.error(error)
       toast('Error al cargar capacitaciones', 'err')
@@ -58,7 +77,7 @@ export default function CapacitacionesAdmin() {
   const handleAdvance = async (training) => {
     try {
       const nextProgress = Math.min((training.progress || 0) + 20, 100)
-      const nextStatus = nextProgress >= 100 ? 'Completado' : 'En proceso'
+      const nextStatus = nextProgress >= 100 ? 'Pendiente de aprobacion' : 'En proceso'
       await updateAdminTraining(training._id, { progress: nextProgress, status: nextStatus })
       toast('Progreso actualizado', 'ok')
       loadData(statusFilter)
@@ -67,12 +86,32 @@ export default function CapacitacionesAdmin() {
     }
   }
 
+  const handleApprove = async (training) => {
+    try {
+      await approveAdminTraining(training._id, {})
+      toast('Capacitacion aprobada y certificado emitido', 'ok')
+      loadData(statusFilter)
+    } catch (error) {
+      toast(error?.response?.data?.message || 'No se pudo aprobar', 'err')
+    }
+  }
+
+  const handleSaveSettings = async () => {
+    try {
+      await updateCertificateSettings(certSettings)
+      toast('Configuracion de certificados guardada', 'ok')
+      loadData(statusFilter)
+    } catch (error) {
+      toast(error?.response?.data?.message || 'No se pudo guardar configuracion', 'err')
+    }
+  }
+
   return (
     <main className="page">
       <div className="ph">
         <div>
           <div className="ph-title">Capacitaciones <em>Admin</em></div>
-          <div className="ph-sub">Gestion de capacitaciones para colaboradores y consultores</div>
+          <div className="ph-sub">Admin aprueba y el sistema emite certificados con folio, fecha, firma y sello</div>
         </div>
       </div>
 
@@ -81,6 +120,20 @@ export default function CapacitacionesAdmin() {
         <div className="sc sc-ok"><div className="sc-num">{stats.completed}</div><div className="sc-lbl">Completadas</div></div>
         <div className="sc sc-blue"><div className="sc-num">{stats.inProgress}</div><div className="sc-lbl">En Proceso</div></div>
         <div className="sc sc-warn"><div className="sc-num">{stats.pending}</div><div className="sc-lbl">Pendientes</div></div>
+      </div>
+
+      <div className="card" style={{ marginBottom: '1rem' }}>
+        <div className="card-hd"><div className="card-title">Configuracion de certificados</div></div>
+        <div style={{ padding: '1rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '.75rem' }}>
+          <input className="finput" placeholder="Prefijo" value={certSettings.prefix || ''} onChange={(e) => setCertSettings({ ...certSettings, prefix: e.target.value })} />
+          <input className="finput" type="number" placeholder="Folio inicial" value={certSettings.startSequence || 1} onChange={(e) => setCertSettings({ ...certSettings, startSequence: Number(e.target.value || 1) })} />
+          <input className="finput" type="number" placeholder="Vigencia dias" value={certSettings.validityDays || 365} onChange={(e) => setCertSettings({ ...certSettings, validityDays: Number(e.target.value || 365) })} />
+          <input className="finput" placeholder="Nombre firmante" value={certSettings.issuerName || ''} onChange={(e) => setCertSettings({ ...certSettings, issuerName: e.target.value })} />
+          <input className="finput" placeholder="Cargo firmante" value={certSettings.issuerRole || ''} onChange={(e) => setCertSettings({ ...certSettings, issuerRole: e.target.value })} />
+          <input className="finput" placeholder="URL firma" value={certSettings.signatureImageUrl || ''} onChange={(e) => setCertSettings({ ...certSettings, signatureImageUrl: e.target.value })} />
+          <input className="finput" placeholder="URL sello" value={certSettings.sealImageUrl || ''} onChange={(e) => setCertSettings({ ...certSettings, sealImageUrl: e.target.value })} />
+          <button className="btn btn-red" onClick={handleSaveSettings}>Guardar config</button>
+        </div>
       </div>
 
       <div className="card" style={{ marginBottom: '1rem' }}>
@@ -101,10 +154,11 @@ export default function CapacitacionesAdmin() {
       <div className="card">
         <div className="card-hd" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="card-title">Listado de capacitaciones</div>
-          <select className="fselect" style={{ maxWidth: 200 }} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <select className="fselect" style={{ maxWidth: 220 }} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
             <option value="">Todos los estados</option>
             <option value="Pendiente">Pendiente</option>
             <option value="En proceso">En proceso</option>
+            <option value="Pendiente de aprobacion">Pendiente de aprobacion</option>
             <option value="Completado">Completado</option>
           </select>
         </div>
@@ -121,13 +175,15 @@ export default function CapacitacionesAdmin() {
                 <tr key={training._id}>
                   <td>{training.title}<div style={{ fontSize: '.72rem', color: 'var(--ash)' }}>{training.module}</div></td>
                   <td>{training.assignedTo?.name || 'N/A'}<div style={{ fontSize: '.72rem', color: 'var(--ash)' }}>{training.assignedTo?.email}</div></td>
-                  <td><span className={`badge ${training.status === 'Completado' ? 'b-ok' : training.status === 'En proceso' ? 'b-blue' : 'b-warn'}`}>{training.status}</span></td>
+                  <td><span className={`badge ${training.status === 'Completado' ? 'b-ok' : training.status === 'En proceso' ? 'b-blue' : training.status === 'Pendiente de aprobacion' ? 'b-err' : 'b-warn'}`}>{training.status}</span></td>
                   <td>{training.progress || 0}%</td>
                   <td>{training.scheduledDate ? new Date(training.scheduledDate).toLocaleDateString('es-MX') : 'Sin fecha'}</td>
                   <td>
-                    {training.status !== 'Completado' && (
+                    {training.status === 'Pendiente de aprobacion' ? (
+                      <button className="btn btn-sm btn-red" onClick={() => handleApprove(training)}>Aprobar y emitir</button>
+                    ) : training.status !== 'Completado' ? (
                       <button className="btn btn-sm btn-blue" onClick={() => handleAdvance(training)}>Avanzar</button>
-                    )}
+                    ) : null}
                   </td>
                 </tr>
               ))}
