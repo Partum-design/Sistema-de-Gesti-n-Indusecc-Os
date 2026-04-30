@@ -130,6 +130,8 @@ export default function Capacitacion() {
         return { badge: 'b-ok', color: 'var(--ok)' }
       case 'En proceso':
         return { badge: 'b-blue', color: 'var(--blue)' }
+      case 'Pendiente de aprobacion':
+        return { badge: 'b-err', color: 'var(--err)' }
       case 'Pendiente':
         return { badge: 'b-warn', color: 'var(--gold)' }
       default:
@@ -245,8 +247,8 @@ export default function Capacitacion() {
                       </div>
                       <div style={{display:'flex',gap:'.5rem',alignItems:'center',flexShrink:0}}>
                         <span className={`badge ${statusInfo.badge}`}>{training.status}</span>
-                        {training.status === 'Completado' && training.score && (
-                          <button className="ibtn" title="Descargar certificado" onClick={() => handleDownloadCertificate(training._id)}>
+                        {training.status === 'Completado' && training.score && training.certificateId && (
+                          <button className="ibtn" title="Descargar certificado" onClick={() => handleDownloadCertificate(training.certificateId)}>
                             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                           </button>
                         )}

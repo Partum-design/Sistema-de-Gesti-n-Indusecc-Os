@@ -10,6 +10,14 @@ import {
   updateCertificateSettings,
 } from '../../api/api'
 
+const readFileAsDataUrl = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = () => reject(new Error('No se pudo leer el archivo'))
+    reader.readAsDataURL(file)
+  })
+
 export default function CapacitacionesAdmin() {
   const [trainings, setTrainings] = useState([])
   const [users, setUsers] = useState([])
@@ -106,6 +114,18 @@ export default function CapacitacionesAdmin() {
     }
   }
 
+  const handleAssetUpload = async (event, field) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    try {
+      const dataUrl = await readFileAsDataUrl(file)
+      setCertSettings((prev) => ({ ...prev, [field]: dataUrl }))
+      toast(`${field === 'signatureImageUrl' ? 'Firma' : 'Sello'} cargado correctamente`, 'ok')
+    } catch {
+      toast('No se pudo cargar el archivo', 'err')
+    }
+  }
+
   return (
     <main className="page">
       <div className="ph">
@@ -130,9 +150,29 @@ export default function CapacitacionesAdmin() {
           <input className="finput" type="number" placeholder="Vigencia dias" value={certSettings.validityDays || 365} onChange={(e) => setCertSettings({ ...certSettings, validityDays: Number(e.target.value || 365) })} />
           <input className="finput" placeholder="Nombre firmante" value={certSettings.issuerName || ''} onChange={(e) => setCertSettings({ ...certSettings, issuerName: e.target.value })} />
           <input className="finput" placeholder="Cargo firmante" value={certSettings.issuerRole || ''} onChange={(e) => setCertSettings({ ...certSettings, issuerRole: e.target.value })} />
-          <input className="finput" placeholder="URL firma" value={certSettings.signatureImageUrl || ''} onChange={(e) => setCertSettings({ ...certSettings, signatureImageUrl: e.target.value })} />
-          <input className="finput" placeholder="URL sello" value={certSettings.sealImageUrl || ''} onChange={(e) => setCertSettings({ ...certSettings, sealImageUrl: e.target.value })} />
+          <input className="finput" placeholder="URL firma o data:image" value={certSettings.signatureImageUrl || ''} onChange={(e) => setCertSettings({ ...certSettings, signatureImageUrl: e.target.value })} />
+          <input className="finput" placeholder="URL sello o data:image" value={certSettings.sealImageUrl || ''} onChange={(e) => setCertSettings({ ...certSettings, sealImageUrl: e.target.value })} />
+          <input className="finput" type="file" accept="image/*" onChange={(event) => handleAssetUpload(event, 'signatureImageUrl')} />
+          <input className="finput" type="file" accept="image/*" onChange={(event) => handleAssetUpload(event, 'sealImageUrl')} />
           <button className="btn btn-red" onClick={handleSaveSettings}>Guardar config</button>
+        </div>
+        <div style={{ padding: '0 1rem 1rem 1rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '.75rem' }}>
+          <div style={{ border: '1px solid var(--border)', borderRadius: 10, padding: '.75rem' }}>
+            <div style={{ fontSize: '.8rem', fontWeight: 700, marginBottom: '.5rem' }}>Vista previa firma</div>
+            {certSettings.signatureImageUrl ? (
+              <img src={certSettings.signatureImageUrl} alt="Firma" style={{ width: '100%', maxHeight: 90, objectFit: 'contain' }} />
+            ) : (
+              <div style={{ fontSize: '.75rem', color: 'var(--ash)' }}>Sin firma cargada</div>
+            )}
+          </div>
+          <div style={{ border: '1px solid var(--border)', borderRadius: 10, padding: '.75rem' }}>
+            <div style={{ fontSize: '.8rem', fontWeight: 700, marginBottom: '.5rem' }}>Vista previa sello</div>
+            {certSettings.sealImageUrl ? (
+              <img src={certSettings.sealImageUrl} alt="Sello" style={{ width: '100%', maxHeight: 110, objectFit: 'contain' }} />
+            ) : (
+              <div style={{ fontSize: '.75rem', color: 'var(--ash)' }}>Sin sello cargado</div>
+            )}
+          </div>
         </div>
       </div>
 

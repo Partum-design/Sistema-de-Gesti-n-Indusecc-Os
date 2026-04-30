@@ -77,6 +77,10 @@ const getUserTrainings = async (req, res) => {
     const trainings = await Training.find({ assignedTo: userId })
       .sort({ createdAt: -1 })
       .populate('assignedTo', 'name email');
+    const certificates = await Certificate.find({ userId, status: 'Activo' }).select('trainingId');
+    const certificateByTrainingId = new Map(
+      certificates.map((certificate) => [String(certificate.trainingId), String(certificate._id)]),
+    );
 
     const stats = {
       completed: trainings.filter(t => t.status === 'Completado').length,
@@ -103,6 +107,7 @@ const getUserTrainings = async (req, res) => {
           status: training.status,
           progress: training.progress,
           score: training.score,
+          certificateId: certificateByTrainingId.get(String(training._id)) || null,
           startDate: training.startDate,
           completionDate: training.completionDate,
           scheduledDate: training.scheduledDate,
