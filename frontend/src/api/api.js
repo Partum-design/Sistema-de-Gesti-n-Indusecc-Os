@@ -17,6 +17,7 @@ export const createUser = (data) => api.post('users/create', data);
 export const updateUser = (id, data) => api.put(`users/${id}`, data);
 export const deleteUser = (id) => api.delete(`users/${id}`);
 export const updateUserProfile = (data) => api.put('users/profile', data);
+export const getUserProfile = () => api.get('users/profile');
 
 // Auditorías
 export const getAudits = (queryParams = {}) => api.get('audits', { params: { limit: 100, ...queryParams } });

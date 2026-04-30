@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   active: { type: Boolean, default: true },
+  profilePhotoUrl: { type: String, trim: true, default: '' },
   lastLogin: { type: Date },
   resetPasswordToken: { type: String },
   resetPasswordExpire: { type: Date },

@@ -38,7 +38,7 @@ const loginUser = async (req, res) => {
 
     res.json({
       message: 'Login exitoso',
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      user: { id: user._id, name: user.name, email: user.email, role: user.role, profilePhotoUrl: user.profilePhotoUrl || '' },
       token,
     })
   } catch (error) {
@@ -204,4 +204,3 @@ const resetPassword = async (req, res) => {
 };
 
 module.exports = { loginUser, uploadFile, registerUser, forgotPassword, resetPassword }
-

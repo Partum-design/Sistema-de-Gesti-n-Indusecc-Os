@@ -125,6 +125,12 @@ export default function ColaboradorLayout() {
                     <div style={{ fontSize: '.85rem', fontWeight: 700, color: 'var(--ink)' }}>{user?.name || 'Colaborador'}</div>
                     <div style={{ fontSize: '.7rem', color: 'var(--ash)' }}>{user?.email}</div>
                   </div>
+                  <button onClick={() => { navigate('/colaborador/perfil'); setShowProfile(false) }} style={{ width: '100%', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 8, border: 'none', background: 'none', color: 'var(--ink)', fontSize: '.8rem', fontWeight: 600, cursor: 'pointer', borderRadius: 4 }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--surface)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'none'}>
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" width="14"><path strokeLinecap="round" strokeLinejoin="round" d="M5.121 17.804A9 9 0 1118.879 17.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Mi Perfil
+                  </button>
                   <button onClick={logout} style={{ width: '100%', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 8, border: 'none', background: 'none', color: '#ef4444', fontSize: '.8rem', fontWeight: 600, cursor: 'pointer', borderRadius: 4 }}
                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(239,68,68,.05)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'none'}>

@@ -54,6 +54,7 @@ import ConsultorRiesgos from './pages/consultor/ConsultorRiesgos'
 import ConsultorAuditorias from './pages/consultor/ConsultorAuditorias'
 import ConsultorDocumentos from './pages/consultor/ConsultorDocumentos'
 import ConsultorReportes from './pages/consultor/ConsultorReportes'
+import Profile from './pages/Profile'
 
 export default function App() {
   // 1. Extraemos el usuario del contexto
@@ -105,6 +106,7 @@ export default function App() {
           <Route path="reportes" element={<Reportes />} />
           <Route path="riesgos" element={<RiesgosAdmin />} />
           <Route path="capacitaciones" element={<CapacitacionesAdmin />} />
+          <Route path="perfil" element={<Profile />} />
         </Route>
 
         {/* Colaborador */}
@@ -126,6 +128,7 @@ export default function App() {
           <Route path="indicadores" element={<Indicadores />} />
           <Route path="capacitacion" element={<Capacitacion />} />
           <Route path="calendario" element={<Calendario />} />
+          <Route path="perfil" element={<Profile />} />
         </Route>
 
         {/* Consultor */}
@@ -145,6 +148,7 @@ export default function App() {
           <Route path="auditorias" element={<ConsultorAuditorias />} />
           <Route path="documentos" element={<ConsultorDocumentos />} />
           <Route path="reportes" element={<ConsultorReportes />} />
+          <Route path="perfil" element={<Profile />} />
         </Route>
 
         {/* Super Admin */}
@@ -163,6 +167,7 @@ export default function App() {
           <Route path="configuracion" element={<SuperAdminConfiguracion />} />
           <Route path="contrasenas" element={<SuperAdminContrasenas />} />
           <Route path="norma" element={<SuperAdminNorma />} />
+          <Route path="perfil" element={<Profile />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />

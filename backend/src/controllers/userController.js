@@ -327,7 +327,7 @@ const getUserStats = async (req, res) => {
 // Actualizar perfil del usuario autenticado
 const updateUserProfile = async (req, res) => {
   try {
-    const { name, currentPassword, newPassword } = req.body;
+    const { name, currentPassword, newPassword, profilePhotoUrl } = req.body;
     const userId = req.user.id;
 
     const user = await User.findById(userId);
@@ -362,6 +362,7 @@ const updateUserProfile = async (req, res) => {
     }
 
     if (name) user.name = name;
+    if (profilePhotoUrl !== undefined) user.profilePhotoUrl = profilePhotoUrl;
     user.updatedAt = new Date();
 
     await user.save();
@@ -377,6 +378,7 @@ const updateUserProfile = async (req, res) => {
           name: user.name,
           email: user.email,
           role: user.role,
+          profilePhotoUrl: user.profilePhotoUrl || '',
           active: user.active,
           updatedAt: user.updatedAt
         }
@@ -392,6 +394,42 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado',
+        code: 'USER_NOT_FOUND'
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Perfil obtenido exitosamente',
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          active: user.active,
+          profilePhotoUrl: user.profilePhotoUrl || '',
+          updatedAt: user.updatedAt
+        }
+      }
+    });
+  } catch (error) {
+    logger.error('Error al obtener perfil:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error al obtener perfil',
+      code: 'GET_PROFILE_ERROR'
+    });
+  }
+};
+
 module.exports = {
   createUser,
   getUsers,
@@ -400,5 +438,6 @@ module.exports = {
   deleteUser,
   toggleUserStatus,
   getUserStats,
+  getUserProfile,
   updateUserProfile,
 };

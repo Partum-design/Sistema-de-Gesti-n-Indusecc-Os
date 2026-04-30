@@ -48,13 +48,21 @@ export const AuthProvider = ({ children }) => {
     // window.location.href = "/login"; 
   };
 
+  const updateSessionUser = (partialUser) => {
+    setUser((prev) => {
+      const next = { ...(prev || {}), ...(partialUser || {}) };
+      localStorage.setItem("user", JSON.stringify(next));
+      return next;
+    });
+  };
+
   if (loading) {
     return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Cargando...</div>;
   }
 
   return (
     // Pasamos todo al Provider para que Login y Sidebar puedan usarlo
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, updateSessionUser }}>
       {children}
     </AuthContext.Provider>
   );

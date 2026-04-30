@@ -10,6 +10,7 @@ const {
   deleteUser,
   toggleUserStatus,
   getUserStats,
+  getUserProfile,
   updateUserProfile
 } = require('../controllers/userController');
 
@@ -95,6 +96,7 @@ const getUsersValidation = [
 
 // Rutas
 router.get('/stats', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), getUserStats);
+router.get('/profile', authenticate, getUserProfile);
 router.get('/', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), ...getUsersValidation, getUsers);
 router.get('/:id', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), validateObjectId, getUserById);
 router.post('/', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), ...createUserValidation, createUser);
