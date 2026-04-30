@@ -10,7 +10,7 @@
   "theme_color": "#8B0000",
   "icons": [
     {
-      "src": "/favicon.png",
+      "src": "/Logotipo-07.png",
       "sizes": "1000x1000",
       "type": "image/png",
       "purpose": "any maskable"
@@ -28,7 +28,7 @@
       "url": "/",
       "icons": [
         {
-          "src": "/favicon.png",
+          "src": "/Logotipo-07.png",
           "sizes": "1000x1000",
           "type": "image/png"
         }

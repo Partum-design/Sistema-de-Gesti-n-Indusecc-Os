@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_VERSION = 'sog-v2'
+const CACHE_VERSION = 'sog-v3'
 const STATIC_CACHE = `static-${CACHE_VERSION}`
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`
 
@@ -28,7 +28,7 @@ self.addEventListener('install', (event) => {
       '',
       'index.html',
       'manifest.webmanifest',
-      'favicon.png',
+      'Logotipo-07.png',
       'logo pwa.png',
       'pwa-192x192.png',
       'pwa-512x512.png',
