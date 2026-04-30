@@ -10,14 +10,7 @@ const Finding = require('../models/Finding');
 const Calendar = require('../models/Calendar');
 const Audit = require('../models/Audit');
 const logger = require('./logger');
-
-const uploadsDir = path.join(__dirname, '../../uploads');
-
-const ensureUploadsDir = () => {
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-  }
-};
+const { ensureUploadsDir, getUploadsDir } = require('./uploads');
 
 const escapePdfText = (value) =>
   String(value ?? '')
@@ -79,7 +72,7 @@ const createSampleUpload = (documentSeed) => {
     documentSeed.description
   ]);
 
-  const filePath = path.join(uploadsDir, documentSeed.filename);
+  const filePath = path.join(getUploadsDir(), documentSeed.filename);
   fs.writeFileSync(filePath, buffer);
 
   return {
