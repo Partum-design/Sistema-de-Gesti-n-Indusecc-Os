@@ -45,7 +45,7 @@ export default function SuperAdminLayout() {
         <div className="sb-brand">
           <div className="sb-logo-box">
             <div className="sb-logo-fb sb-logo-img" aria-label="Indusecc">
-              <InduseccLogo alt="Indusecc" />
+              <InduseccLogo alt="Indusecc" file="favicon.png" />
             </div>
           </div>
           <div>

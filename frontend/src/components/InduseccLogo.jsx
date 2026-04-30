@@ -1,5 +1,6 @@
-export default function InduseccLogo({ className, style, alt = 'Indusecc' }) {
-  const src = `${import.meta.env.BASE_URL}logo%20(1).png`
+export default function InduseccLogo({ className, style, alt = 'Indusecc', file = 'logo (1).png' }) {
+  const encodedFile = encodeURIComponent(file)
+  const src = `${import.meta.env.BASE_URL}${encodedFile}`
   return (
     <img
       className={className}

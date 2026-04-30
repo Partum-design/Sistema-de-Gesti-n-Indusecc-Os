@@ -47,7 +47,7 @@ export default function ConsultorLayout() {
         <div className="sb-brand">
           <div className="sb-logo-box">
             <div className="sb-logo-fb sb-logo-img" aria-label="Indusecc">
-              <InduseccLogo alt="Indusecc" />
+              <InduseccLogo alt="Indusecc" file="favicon.png" />
             </div>
           </div>
           <div><div className="sb-name">Indusecc <em>SO</em></div><div className="sb-sub">Consultor SGC</div></div>
