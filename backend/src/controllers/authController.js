@@ -1,14 +1,14 @@
-const jwt = require('jsonwebtoken')
+﻿const jwt = require('jsonwebtoken')
 const User = require('../models/User')
-const { JWT_SECRET } = require('../config/environment')
+const { JWT_SECRET, FRONTEND_URL } = require('../config/environment')
 const logger = require('../utils/logger')
 
 const registerUser = async (req, res) => {
   try {
-    // Este endpoint está deprecado. Usar POST /api/registration/request en su lugar
+    // Este endpoint estÃ¡ deprecado. Usar POST /api/registration/request en su lugar
     return res.status(410).json({
       success: false,
-      message: 'Este endpoint está deprecado. Use POST /api/registration/request',
+      message: 'Este endpoint estÃ¡ deprecado. Use POST /api/registration/request',
       code: 'DEPRECATED_ENDPOINT',
       newEndpoint: 'POST /api/registration/request'
     });
@@ -59,13 +59,13 @@ const uploadFile = async (req, res) => {
       })
     }
 
-    // Validar tamaño máximo (10MB)
+    // Validar tamaÃ±o mÃ¡ximo (10MB)
     const fileSizeBytes = Buffer.byteLength(file, 'utf8')
     const maxSize = 10 * 1024 * 1024
     if (fileSizeBytes > maxSize) {
       return res.status(413).json({
         success: false,
-        message: 'Archivo demasiado grande (máximo 10MB)',
+        message: 'Archivo demasiado grande (mÃ¡ximo 10MB)',
         code: 'FILE_TOO_LARGE'
       })
     }
@@ -119,37 +119,38 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     // Link para el frontend
-    // En producción esto debería venir de una variable de entorno
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    // En producciÃ³n esto deberÃ­a venir de una variable de entorno
+    const frontendBaseUrl = (FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
+    const resetUrl = `${frontendBaseUrl}/reset-password/${resetToken}`;
 
-    const message = `Has solicitado restablecer tu contraseña en Indusecc SGC.\n\nPor favor haz clic en el siguiente enlace:\n\n${resetUrl}\n\nSi no solicitaste esto, ignora este correo.`;
+    const message = `Has solicitado restablecer tu contraseÃ±a en Indusecc SGC.\n\nPor favor haz clic en el siguiente enlace:\n\n${resetUrl}\n\nSi no solicitaste esto, ignora este correo.`;
 
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-        <h2 style="color: #8B0000; border-bottom: 2px solid #D4AF37; padding-bottom: 10px;">Recuperación de Contraseña</h2>
+        <h2 style="color: #8B0000; border-bottom: 2px solid #D4AF37; padding-bottom: 10px;">RecuperaciÃ³n de ContraseÃ±a</h2>
         <p>Hola, <strong>${user.name}</strong>.</p>
-        <p>Has solicitado restablecer tu contraseña en nuestra plataforma <strong>Indusecc SGC</strong>.</p>
+        <p>Has solicitado restablecer tu contraseÃ±a en nuestra plataforma <strong>Indusecc SGC</strong>.</p>
         <div style="text-align: center; margin: 30px 0;">
-          <a href="${resetUrl}" style="background-color: #8B0000; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Restablecer Contraseña</a>
+          <a href="${resetUrl}" style="background-color: #8B0000; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Restablecer ContraseÃ±a</a>
         </div>
-        <p style="font-size: 0.8em; color: #666;">Este enlace expirará en 10 minutos. Si el botón no funciona, copia y pega este enlace en tu navegador:</p>
+        <p style="font-size: 0.8em; color: #666;">Este enlace expirarÃ¡ en 10 minutos. Si el botÃ³n no funciona, copia y pega este enlace en tu navegador:</p>
         <p style="font-size: 0.8em; color: #666; word-break: break-all;">${resetUrl}</p>
         <hr />
-        <p style="font-size: 0.7em; color: #999;">Indusecc SGC - Sistema de Gestión de Calidad</p>
+        <p style="font-size: 0.7em; color: #999;">Indusecc SGC - Sistema de GestiÃ³n de Calidad</p>
       </div>
     `;
 
     try {
       await sendEmail({
         email: user.email,
-        subject: 'Recuperación de Contraseña - Indusecc SGC',
+        subject: 'RecuperaciÃ³n de ContraseÃ±a - Indusecc SGC',
         message: message,
         html: html
       });
 
       res.status(200).json({
         success: true,
-        data: 'Se ha enviado un enlace de recuperación a su correo electrónico.'
+        data: 'Se ha enviado un enlace de recuperaciÃ³n a su correo electrÃ³nico.'
       });
 
     } catch (err) {
@@ -157,7 +158,7 @@ const forgotPassword = async (req, res) => {
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
       await user.save();
-      return res.status(500).json({ message: 'No se pudo enviar el correo, intente más tarde' });
+      return res.status(500).json({ message: 'No se pudo enviar el correo, intente mÃ¡s tarde' });
     }
 
   } catch (error) {
@@ -182,10 +183,10 @@ const resetPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: 'Token inválido o expirado' });
+      return res.status(400).json({ message: 'Token invÃ¡lido o expirado' });
     }
 
-    // Cambiar contraseña
+    // Cambiar contraseÃ±a
     user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
@@ -194,13 +195,14 @@ const resetPassword = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Contraseña actualizada exitosamente',
+      message: 'ContraseÃ±a actualizada exitosamente',
     });
 
   } catch (error) {
     logger.error('Error in resetPassword:', error);
-    res.status(500).json({ message: 'Error al restablecer contraseña' });
+    res.status(500).json({ message: 'Error al restablecer contraseÃ±a' });
   }
 };
 
 module.exports = { loginUser, uploadFile, registerUser, forgotPassword, resetPassword }
+
