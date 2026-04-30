@@ -33,6 +33,7 @@ import UsuariosRoles from './pages/admin/UsuariosRoles'
 import Configuracion from './pages/admin/Configuracion'
 import Reportes from './pages/admin/Reportes'
 import RiesgosAdmin from './pages/admin/RiesgosAdmin'
+import CapacitacionesAdmin from './pages/admin/CapacitacionesAdmin'
 
 // Colaborador pages
 import MiPanel from './pages/colaborador/MiPanel'
@@ -103,6 +104,7 @@ export default function App() {
           <Route path="configuracion" element={<Configuracion />} />
           <Route path="reportes" element={<Reportes />} />
           <Route path="riesgos" element={<RiesgosAdmin />} />
+          <Route path="capacitaciones" element={<CapacitacionesAdmin />} />
         </Route>
 
         {/* Colaborador */}

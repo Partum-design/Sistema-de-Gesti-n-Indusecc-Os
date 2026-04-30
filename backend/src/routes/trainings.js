@@ -1,12 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middleware/auth');
+const { authorize } = require('../middleware/auth');
 const {
   getUserTrainings,
   getUserCertificates,
   updateTrainingProgress,
   downloadCertificate,
-  createSampleTrainings
+  createSampleTrainings,
+  getAdminTrainings,
+  createTrainingByAdmin,
+  updateTrainingByAdmin,
 } = require('../controllers/trainingController');
 
 // Todas las rutas requieren autenticación
@@ -26,5 +30,10 @@ router.get('/certificates/:id/download', downloadCertificate);
 
 // Crear capacitaciones de ejemplo (solo para desarrollo)
 router.post('/sample', createSampleTrainings);
+
+// Admin / Super Admin
+router.get('/admin/all', authorize('ADMIN', 'SUPER_ADMIN'), getAdminTrainings);
+router.post('/admin', authorize('ADMIN', 'SUPER_ADMIN'), createTrainingByAdmin);
+router.put('/admin/:id', authorize('ADMIN', 'SUPER_ADMIN'), updateTrainingByAdmin);
 
 module.exports = router;

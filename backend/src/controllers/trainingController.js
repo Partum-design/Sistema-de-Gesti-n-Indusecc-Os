@@ -298,10 +298,159 @@ const createSampleTrainings = async (req, res) => {
   }
 };
 
+const getAdminTrainings = async (req, res) => {
+  try {
+    const { status, assignedTo, search } = req.query;
+    const query = {};
+
+    if (status) query.status = status;
+    if (assignedTo) query.assignedTo = assignedTo;
+    if (search) query.title = { $regex: search, $options: 'i' };
+
+    const trainings = await Training.find(query)
+      .sort({ createdAt: -1 })
+      .populate('assignedTo', 'name email role');
+
+    const stats = {
+      total: trainings.length,
+      completed: trainings.filter(t => t.status === 'Completado').length,
+      inProgress: trainings.filter(t => t.status === 'En proceso').length,
+      pending: trainings.filter(t => t.status === 'Pendiente').length,
+    };
+
+    return res.json({
+      success: true,
+      data: { trainings, stats },
+    });
+  } catch (error) {
+    logger.error('Error al obtener capacitaciones para admin:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error al obtener capacitaciones',
+      code: 'GET_ADMIN_TRAININGS_ERROR',
+    });
+  }
+};
+
+const createTrainingByAdmin = async (req, res) => {
+  try {
+    const {
+      title,
+      module,
+      description,
+      assignedTo,
+      scheduledDate,
+      status = 'Pendiente',
+      progress = 0,
+      score,
+    } = req.body;
+
+    if (!title || !module || !assignedTo) {
+      return res.status(400).json({
+        success: false,
+        message: 'title, module y assignedTo son requeridos',
+      });
+    }
+
+    const user = await User.findById(assignedTo);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Usuario asignado no encontrado' });
+    }
+
+    const training = await Training.create({
+      title,
+      module,
+      description,
+      assignedTo,
+      scheduledDate,
+      status,
+      progress,
+      score,
+      startDate: status === 'En proceso' ? new Date() : undefined,
+      completionDate: status === 'Completado' ? new Date() : undefined,
+    });
+
+    if (status === 'Completado') {
+      await Certificate.findOneAndUpdate(
+        { trainingId: training._id, userId: assignedTo },
+        {
+          trainingId: training._id,
+          userId: assignedTo,
+          title: training.title,
+          module: training.module,
+          score: score || 90,
+        },
+        { upsert: true, new: true },
+      );
+    }
+
+    return res.status(201).json({ success: true, data: { training } });
+  } catch (error) {
+    logger.error('Error al crear capacitacion por admin:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error al crear capacitacion',
+      code: 'CREATE_ADMIN_TRAINING_ERROR',
+    });
+  }
+};
+
+const updateTrainingByAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = { ...req.body };
+
+    const training = await Training.findById(id);
+    if (!training) {
+      return res.status(404).json({ success: false, message: 'Capacitacion no encontrada' });
+    }
+
+    const nextStatus = updates.status || training.status;
+    const nextProgress = updates.progress !== undefined ? updates.progress : training.progress;
+
+    if (nextStatus === 'En proceso' && !training.startDate) {
+      updates.startDate = new Date();
+    }
+    if (nextStatus === 'Completado' || Number(nextProgress) >= 100) {
+      updates.status = 'Completado';
+      updates.progress = 100;
+      if (!training.completionDate) updates.completionDate = new Date();
+    }
+
+    const updated = await Training.findByIdAndUpdate(id, updates, { new: true });
+
+    if (updated.status === 'Completado') {
+      await Certificate.findOneAndUpdate(
+        { trainingId: updated._id, userId: updated.assignedTo },
+        {
+          trainingId: updated._id,
+          userId: updated.assignedTo,
+          title: updated.title,
+          module: updated.module,
+          score: updated.score || 90,
+        },
+        { upsert: true, new: true },
+      );
+    }
+
+    return res.json({ success: true, data: { training: updated } });
+  } catch (error) {
+    logger.error('Error al actualizar capacitacion por admin:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error al actualizar capacitacion',
+      code: 'UPDATE_ADMIN_TRAINING_ERROR',
+    });
+  }
+};
+
 module.exports = {
   getUserTrainings,
   getUserCertificates,
   updateTrainingProgress,
   downloadCertificate,
-  createSampleTrainings
+  createSampleTrainings,
+  getAdminTrainings,
+  createTrainingByAdmin,
+  updateTrainingByAdmin,
 };
