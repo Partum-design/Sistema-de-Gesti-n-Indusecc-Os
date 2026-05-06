@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { requestRegistration } from '../api/api'
 import InduseccLogo from '../components/InduseccLogo'
+import '../styles/login.css'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -44,9 +45,9 @@ export default function Register() {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: "'DM Sans', sans-serif", background: 'var(--red-k)' }}>
+    <div className="shell login-shell">
       {/* Hero */}
-      <div style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '5rem', overflow: 'hidden', minHeight: '100vh' }}>
+      <div className="hero login-hero">
         <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(to top,var(--red-k) 0%,rgba(61,14,17,.82) 40%,rgba(30,6,8,.4) 100%)' }} />
         <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, zIndex: 10, background: 'linear-gradient(to bottom,transparent 0%,var(--red-b) 30%,var(--gold) 70%,transparent 100%)' }} />
         <div style={{ position: 'relative', zIndex: 5, maxWidth: 600, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
@@ -64,7 +65,7 @@ export default function Register() {
       </div>
 
       {/* Panel */}
-      <div style={{ width: '45%', minWidth: 420, maxWidth: 650, flexShrink: 0, background: 'var(--off-white)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '3rem 4rem', position: 'relative', overflowY: 'auto', boxShadow: '-40px 0 100px rgba(0,0,0,.8),-1px 0 0 rgba(201,168,76,.2)' }}>
+      <div className="login-panel">
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(to right,var(--red-d),var(--red),var(--gold),var(--red),var(--red-d))' }} />
         <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 400 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '2rem' }}>
