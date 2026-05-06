@@ -1,8 +1,8 @@
 {
   "version": 2,
   "framework": "vite",
-  "installCommand": "cd frontend && npm ci --no-workspaces && cd ../backend && npm ci --no-workspaces",
-  "buildCommand": "cd frontend && npm run build",
+  "installCommand": "npm ci --prefix frontend && npm ci --prefix backend",
+  "buildCommand": "npm run build --prefix frontend",
   "outputDirectory": "frontend/dist",
   "functions": {
     "api/[...path].js": {
