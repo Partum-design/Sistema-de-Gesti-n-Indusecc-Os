@@ -1,0 +1,13 @@
+{
+  "name": "sistema-de-gestion-indusecc-os",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace frontend",
+    "lint": "npm run lint --workspace frontend"
+  }
+}
+
