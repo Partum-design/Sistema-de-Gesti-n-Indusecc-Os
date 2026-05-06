@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { getPushPublicKey, sendPushTest, subscribeToPush } from '../api/api';
+import React, { useEffect, useMemo, useState } from 'react';
+import { getPushPublicKey, subscribeToPush } from '../api/api';
 
 const urlBase64ToUint8Array = (base64String) => {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -14,6 +14,22 @@ export default function PWAInstallPrompt() {
   const [canNotify, setCanNotify] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const [dismissed, setDismissed] = useState(() => window.sessionStorage?.getItem('pwaPromptDismissed') === '1');
+
+  const shouldOfferPush = useMemo(() => {
+    if (!canNotify) return false;
+    if (typeof Notification === 'undefined') return false;
+    return Notification.permission !== 'granted';
+  }, [canNotify]);
+
+  const dismiss = () => {
+    setDismissed(true);
+    try {
+      window.sessionStorage?.setItem('pwaPromptDismissed', '1');
+    } catch {
+      // ignore storage errors
+    }
+  };
 
   useEffect(() => {
     const onBeforeInstall = (event) => {
@@ -30,7 +46,16 @@ export default function PWAInstallPrompt() {
 
     setCanNotify('serviceWorker' in navigator && 'PushManager' in window);
 
-    return () => window.removeEventListener('beforeinstallprompt', onBeforeInstall);
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') dismiss();
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', onBeforeInstall);
+      window.removeEventListener('keydown', onKeyDown);
+    };
   }, []);
 
   const handleInstall = async () => {
@@ -67,6 +92,7 @@ export default function PWAInstallPrompt() {
 
       await subscribeToPush(subscription);
       setMessage('Notificaciones activadas.');
+      dismiss();
     } catch (error) {
       setMessage(error?.response?.data?.message || 'No se pudieron activar notificaciones.');
     } finally {
@@ -74,60 +100,55 @@ export default function PWAInstallPrompt() {
     }
   };
 
-  const handlePushTest = async () => {
-    if (busy) return;
-    setBusy(true);
-    try {
-      await sendPushTest({ title: 'Prueba Push', body: 'Tu dispositivo ya recibe notificaciones.' });
-      setMessage('Notificacion de prueba enviada.');
-    } catch (error) {
-      setMessage(error?.response?.data?.message || 'No se pudo enviar la prueba.');
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  if (!showInstall && !canNotify) return null;
+  if (dismissed) return null;
+  if (!showInstall && !shouldOfferPush) return null;
 
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.header}>
-        <img src="/Logotipo-07.png" alt="Logo" style={styles.logo} />
-        <div>
-          <div style={styles.title}>INDUSECC PWA</div>
-          <div style={styles.subtitle}>Instala y activa notificaciones push</div>
+    <div style={styles.backdrop} onClick={dismiss} role="presentation">
+      <div style={styles.wrapper} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+        <button type="button" onClick={dismiss} style={styles.close} aria-label="Cerrar" disabled={busy}>
+          ×
+        </button>
+
+        <div style={styles.header}>
+          <img src="/Logotipo-07.png" alt="Logo" style={styles.logo} />
+          <div>
+            <div style={styles.title}>INDUSECC OS</div>
+            <div style={styles.subtitle}>Instala y activa notificaciones push</div>
+          </div>
         </div>
-      </div>
 
-      <div style={styles.actions}>
-        {showInstall && (
-          <button type="button" onClick={handleInstall} style={styles.primary} disabled={busy}>
-            Instalar app
-          </button>
-        )}
-        {canNotify && (
-          <button type="button" onClick={handleEnablePush} style={styles.secondary} disabled={busy}>
-            Activar notificaciones
-          </button>
-        )}
-        {canNotify && (
-          <button type="button" onClick={handlePushTest} style={styles.ghost} disabled={busy}>
-            Enviar prueba
-          </button>
-        )}
-      </div>
+        <div style={styles.actions}>
+          {showInstall && (
+            <button type="button" onClick={handleInstall} style={styles.primary} disabled={busy}>
+              Instalar app
+            </button>
+          )}
+          {shouldOfferPush && (
+            <button type="button" onClick={handleEnablePush} style={styles.secondary} disabled={busy}>
+              Activar notificaciones
+            </button>
+          )}
+        </div>
 
-      {message ? <div style={styles.message}>{message}</div> : null}
+        {message ? <div style={styles.message}>{message}</div> : null}
+      </div>
     </div>
   );
 }
 
 const styles = {
-  wrapper: {
+  backdrop: {
     position: 'fixed',
-    right: 16,
-    bottom: 16,
+    inset: 0,
     zIndex: 10000,
+    display: 'grid',
+    placeItems: 'center',
+    padding: 16,
+    background: 'rgba(0,0,0,0.25)',
+    backdropFilter: 'blur(2px)',
+  },
+  wrapper: {
     width: 'min(340px, calc(100vw - 24px))',
     background: '#4c0910',
     color: '#fff',
@@ -135,6 +156,19 @@ const styles = {
     border: '1px solid rgba(255,255,255,0.15)',
     boxShadow: '0 18px 30px rgba(0,0,0,0.25)',
     padding: 14,
+    position: 'relative',
+  },
+  close: {
+    position: 'absolute',
+    top: 8,
+    right: 10,
+    border: 'none',
+    background: 'transparent',
+    color: '#fff',
+    fontSize: 22,
+    lineHeight: 1,
+    cursor: 'pointer',
+    opacity: 0.9,
   },
   header: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 },
   logo: { width: 38, height: 38, objectFit: 'cover', borderRadius: 8, background: '#fff' },
@@ -156,15 +190,6 @@ const styles = {
     padding: '8px 10px',
     background: '#fff',
     color: '#4c0910',
-    fontWeight: 700,
-    cursor: 'pointer',
-  },
-  ghost: {
-    border: '1px solid rgba(255,255,255,0.35)',
-    borderRadius: 8,
-    padding: '8px 10px',
-    background: 'transparent',
-    color: '#fff',
     fontWeight: 700,
     cursor: 'pointer',
   },
