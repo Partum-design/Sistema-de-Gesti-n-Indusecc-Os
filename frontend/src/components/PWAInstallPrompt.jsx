@@ -15,12 +15,23 @@ export default function PWAInstallPrompt() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [dismissed, setDismissed] = useState(() => window.sessionStorage?.getItem('pwaPromptDismissed') === '1');
+  const [isStandalone, setIsStandalone] = useState(false);
+
+  const isIOS = useMemo(() => {
+    const ua = navigator.userAgent || '';
+    return /iPad|iPhone|iPod/i.test(ua);
+  }, []);
 
   const shouldOfferPush = useMemo(() => {
     if (!canNotify) return false;
     if (typeof Notification === 'undefined') return false;
     return Notification.permission !== 'granted';
   }, [canNotify]);
+
+  const shouldOfferInstall = useMemo(() => {
+    if (isStandalone) return false;
+    return showInstall || isIOS;
+  }, [isStandalone, isIOS, showInstall]);
 
   const dismiss = () => {
     setDismissed(true);
@@ -45,6 +56,9 @@ export default function PWAInstallPrompt() {
     });
 
     setCanNotify('serviceWorker' in navigator && 'PushManager' in window);
+    setIsStandalone(
+      window.matchMedia?.('(display-mode: standalone)')?.matches === true || window.navigator?.standalone === true,
+    );
 
     const onKeyDown = (event) => {
       if (event.key === 'Escape') dismiss();
@@ -59,11 +73,18 @@ export default function PWAInstallPrompt() {
   }, []);
 
   const handleInstall = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    setDeferredPrompt(null);
-    setShowInstall(false);
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      setDeferredPrompt(null);
+      setShowInstall(false);
+      return;
+    }
+
+    if (isIOS) {
+      setMessage('En iPhone/iPad: toca Compartir y luego "Añadir a pantalla de inicio".');
+      return;
+    }
   };
 
   const handleEnablePush = async () => {
@@ -101,7 +122,7 @@ export default function PWAInstallPrompt() {
   };
 
   if (dismissed) return null;
-  if (!showInstall && !shouldOfferPush) return null;
+  if (!shouldOfferInstall && !shouldOfferPush) return null;
 
   return (
     <div style={styles.backdrop} onClick={dismiss} role="presentation">
@@ -119,7 +140,7 @@ export default function PWAInstallPrompt() {
         </div>
 
         <div style={styles.actions}>
-          {showInstall && (
+          {shouldOfferInstall && (
             <button type="button" onClick={handleInstall} style={styles.primary} disabled={busy}>
               Instalar app
             </button>
