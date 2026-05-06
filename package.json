@@ -1,6 +1,9 @@
 {
   "name": "sistema-de-gestion-indusecc-os",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "workspaces": [
     "frontend",
     "backend"
@@ -10,4 +13,3 @@
     "lint": "npm run lint --workspace frontend"
   }
 }
-
