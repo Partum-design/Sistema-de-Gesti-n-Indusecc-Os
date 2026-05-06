@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_VERSION = 'sog-v3'
+const CACHE_VERSION = 'sog-v4'
 const STATIC_CACHE = `static-${CACHE_VERSION}`
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`
 
@@ -75,10 +75,19 @@ self.addEventListener('fetch', (event) => {
   event.respondWith((async () => {
     const cache = await caches.open(RUNTIME_CACHE)
     const cached = await cache.match(request)
-    if (cached) return cached
-    const fresh = await fetch(request)
-    cache.put(request, fresh.clone())
-    return fresh
+
+    const fetchAndUpdate = async () => {
+      const fresh = await fetch(request)
+      cache.put(request, fresh.clone())
+      return fresh
+    }
+
+    if (cached) {
+      event.waitUntil(fetchAndUpdate().catch(() => undefined))
+      return cached
+    }
+
+    return fetchAndUpdate()
   })())
 })
 
