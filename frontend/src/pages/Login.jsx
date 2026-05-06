@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { loginRequest } from '../api/auth' 
 import InduseccLogo from '../components/InduseccLogo'
+import '../styles/login.css'
 
 class Particle {
   constructor(canvas) {
@@ -159,7 +160,7 @@ export default function Login() {
   }
 
   return (
-    <div className="shell" style={{ display: 'flex', minHeight: '100vh', fontFamily: "'DM Sans', sans-serif", background: 'var(--red-k)', overflow: 'hidden' }}>
+    <div className="shell login-shell">
       <style>
         {`
           @keyframes goldSweep {
@@ -186,7 +187,7 @@ export default function Login() {
       </style>
 
       {/* Hero */}
-      <div className="hero" style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '5rem', overflow: 'hidden', minHeight: '100vh' }}>
+      <div className="hero login-hero">
         {/* Video Background */}
         <video 
           autoPlay muted loop playsInline
@@ -209,7 +210,7 @@ export default function Login() {
         <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, zIndex: 10, background: 'linear-gradient(to bottom,transparent 0%,var(--red-b) 30%,var(--gold) 70%,transparent 100%)' }} />
         <div style={{ position: 'absolute', top: '2rem', left: '2rem', width: 32, height: 32, borderTop: '1.5px solid rgba(201,168,76,.5)', borderLeft: '1.5px solid rgba(201,168,76,.5)', zIndex: 4, pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', bottom: '2rem', right: '2rem', width: 32, height: 32, borderBottom: '1.5px solid rgba(201,168,76,.5)', borderRight: '1.5px solid rgba(201,168,76,.5)', zIndex: 4, pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', right: '-1rem', top: '50%', transform: 'translateY(-52%)', fontFamily: "'Playfair Display', serif", fontSize: 'clamp(14rem,22vw,28rem)', fontWeight: 900, color: 'rgba(123,30,34,.1)', zIndex: 2, pointerEvents: 'none', userSelect: 'none', lineHeight: 1 }}>I</div>
+        <div className="login-hero-watermark" style={{ position: 'absolute', right: '-1rem', top: '50%', transform: 'translateY(-52%)', fontFamily: "'Playfair Display', serif", fontSize: 'clamp(14rem,22vw,28rem)', fontWeight: 900, color: 'rgba(123,30,34,.1)', zIndex: 2, pointerEvents: 'none', userSelect: 'none', lineHeight: 1 }}>I</div>
 
         <div style={{ position: 'relative', zIndex: 5, maxWidth: 600, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           <div style={{ marginBottom: '2.5rem' }}>
@@ -229,9 +230,9 @@ export default function Login() {
             <div style={{ width: 5, height: 5, background: 'var(--gold)', transform: 'rotate(45deg)', flexShrink: 0 }} />
             <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right,rgba(201,168,76,.6),transparent)' }} />
           </div>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 0 }}>
+          <div className="login-stats">
             {[{ num: '142', label: 'Docs. Vigentes' }, { num: '96%', label: 'Cumplimiento' }, { num: '5', label: 'Auditorías' }].map((s, i, arr) => (
-              <div key={i} style={{ padding: '0 1.8rem 0 0', borderRight: i < arr.length - 1 ? '1px solid rgba(201,168,76,.2)' : 'none', paddingLeft: i > 0 ? '1.8rem' : 0 }}>
+              <div key={i} className="login-stat" style={{ borderRight: i < arr.length - 1 ? '1px solid rgba(201,168,76,.2)' : 'none' }}>
                 <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', fontWeight: 700, color: 'var(--gold-l)', lineHeight: 1, marginBottom: '.35rem' }}>{s.num}</div>
                 <div style={{ fontSize: 9, fontWeight: 500, letterSpacing: '.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', lineHeight: 1.5 }}>{s.label}</div>
               </div>
@@ -241,7 +242,7 @@ export default function Login() {
       </div>
 
       {/* Panel */}
-      <div style={{ width: '45%', minWidth: 420, maxWidth: 650, flexShrink: 0, background: 'var(--off-white)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '3rem 4rem', position: 'relative', overflowY: 'auto', boxShadow: '-40px 0 100px rgba(0,0,0,.8),-1px 0 0 rgba(201,168,76,.2)' }}>
+      <div className="login-panel">
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(to right,var(--red-d),var(--red),var(--gold),var(--red),var(--red-d))' }} />
         <div style={{ position: 'absolute', top: '-30%', left: '50%', transform: 'translateX(-50%)', width: '120%', height: '50%', background: 'radial-gradient(ellipse,rgba(123,30,34,.07) 0%,transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
 
