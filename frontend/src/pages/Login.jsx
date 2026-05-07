@@ -51,6 +51,7 @@ export default function Login() {
   const { login } = useContext(AuthContext)
   const [email, setEmail] = useState('colaborador@indusecc.com')
   const [password, setPassword] = useState('colab123')
+  const [showPassword, setShowPassword] = useState(false)
   const [errorMsg, setErrorMsg] = useState(null)
   
   // Referencia para el canvas de partículas
@@ -289,14 +290,49 @@ export default function Login() {
 
             <div style={{ marginBottom: '1.8rem' }}>
               <label style={{ fontSize: '.73rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--ash)', display: 'block', marginBottom: '.5rem' }}>Contraseña</label>
-              <input 
-                className="finput" 
-                type="password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)} // Guardamos lo que escribe
-                placeholder="Tu contraseña segura" 
-                required
-              />
+              <div style={{ position: 'relative' }}>
+                <input 
+                  className="finput" 
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)} // Guardamos lo que escribe
+                  placeholder="Tu contraseña segura" 
+                  required
+                  style={{ paddingRight: 44 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(v => !v)}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  title={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  style={{
+                    position: 'absolute',
+                    right: 8,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    width: 34,
+                    height: 34,
+                    borderRadius: 8,
+                    border: '1px solid var(--border)',
+                    background: 'var(--surface)',
+                    color: 'var(--ink6)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {showPassword ? (
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a11.96 11.96 0 012.151-3.399M9.88 9.88A3 3 0 0114.12 14.12M6.228 6.228A11.973 11.973 0 0112 5c4.478 0 8.268 2.943 9.542 7a11.958 11.958 0 01-4.118 5.07M6.228 6.228L3 3m3.228 3.228l3.274 3.274m7.268 7.268L21 21m-3.228-3.228l-3.274-3.274" />
+                    </svg>
+                  ) : (
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
               <div style={{ textAlign: 'right', marginTop: '.5rem' }}>
                 <span onClick={() => navigate('/forgot-password')} style={{ fontSize: '.78rem', color: 'var(--red)', fontWeight: 600, cursor: 'pointer' }}>¿Olvidaste tu contraseña?</span>
               </div>
