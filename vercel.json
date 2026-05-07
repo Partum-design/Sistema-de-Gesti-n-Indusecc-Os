@@ -1,7 +1,7 @@
 {
   "version": 2,
   "framework": "vite",
-  "installCommand": "npm ci --include=optional",
+  "installCommand": "npm ci --include=optional --include=dev",
   "buildCommand": "npm run build",
   "outputDirectory": "frontend/dist",
   "functions": {
