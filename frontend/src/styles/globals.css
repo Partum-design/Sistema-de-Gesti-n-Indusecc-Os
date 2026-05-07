@@ -45,6 +45,15 @@ table { max-width: 100%; }
 .hero-buttons { display: flex; flex-wrap: wrap; gap: .6rem; }
 .hero-buttons .btn { max-width: 100%; }
 
+/* USER CARDS (Super Admin / Admin lists) */
+.user-card { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--white); }
+.user-av { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+.user-av span { font-weight: 900; letter-spacing: .04em; }
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-weight: 900; color: var(--ink); line-height: 1.15; overflow-wrap: anywhere; }
+.user-email { font-size: .78rem; color: var(--ash); margin-top: 2px; overflow-wrap: anywhere; }
+.user-actions { flex-shrink: 0; }
+
 /* ── SIDEBAR ── */
 .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sw); background: var(--red-k); display: flex; flex-direction: column; z-index: 200; transition: transform .3s; }
 .sidebar::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg,rgba(123,30,34,.3),transparent 50%); }
@@ -407,6 +416,12 @@ label.lbl { font-size: .73rem; font-weight: 700; letter-spacing: .12em; text-tra
   /* Tablas estilo INDUSECC */
   .tbl { min-width: 0; }
   .tbl th, .tbl td { white-space: normal; }
+
+  /* User cards: permitir wrap en móvil */
+  .user-card { flex-wrap: wrap; align-items: flex-start; }
+  .user-info { flex: 1 1 calc(100% - 56px); }
+  .user-card > span { order: 3; }
+  .user-actions { order: 4; width: 100%; justify-content: flex-end; }
 }
 @media(max-width:480px) {
   .sg { grid-template-columns: 1fr; }
@@ -422,6 +437,9 @@ label.lbl { font-size: .73rem; font-weight: 700; letter-spacing: .12em; text-tra
   .hero-buttons .btn { width: 100%; flex: 1 1 100%; }
 
   .fab { right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); width: 46px; height: 46px; }
+
+  .user-card > span { display: inline-flex; }
+  .user-actions { justify-content: flex-start; }
 }
 
 /* TASK ITEMS */
