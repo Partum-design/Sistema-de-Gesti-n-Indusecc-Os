@@ -28,7 +28,7 @@
     "globals": "^17.4.0",
     "postcss": "^8.4.47",
     "source-map-js": "^1.0.2",
-    "vite": "^8.0.1"
+    "vite": "^7.3.3"
   },
   "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
   "main": "eslint.config.js",
