@@ -4,7 +4,10 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/indusecc-os';
+const MONGO_URI =
+  process.env.MONGODB_URI ||
+  process.env.MONGO_URI ||
+  'mongodb://localhost:27017/indusecc-os';
 const JWT_SECRET = process.env.JWT_SECRET || 'tu_secreto_muy_largo_y_aleatorio_aqui';
 const JWT_EXPIRE = process.env.JWT_EXPIRE || '1h';
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'otro_secreto_largo_aleatorio';

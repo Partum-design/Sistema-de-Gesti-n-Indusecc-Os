@@ -108,7 +108,15 @@ const initializeServer = async () => {
 
   serverReadyPromise = (async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(MONGO_URI);
+      mongoose.connection.on('disconnected', () => logger.warn(' MongoDB desconectado'));
+      mongoose.connection.on('reconnected', () => logger.info(' MongoDB reconectado'));
+      mongoose.connection.on('error', (err) => logger.error(' Error MongoDB:', err));
+
+      await mongoose.connect(MONGO_URI, {
+        serverSelectionTimeoutMS: 10000,
+        socketTimeoutMS: 45000,
+        maxPoolSize: 5,
+      });
       logger.info(' Conectado a MongoDB');
     }
 
@@ -148,12 +156,17 @@ app.use('/api/notifications', notificationRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
+  const dbState = mongoose.connection.readyState; // 0=disconnected, 1=connected, 2=connecting, 3=disconnecting
   res.json({
     success: true,
     message: 'Servidor funcionando correctamente',
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
-    environment: NODE_ENV
+    environment: NODE_ENV,
+    mongo: {
+      state: dbState,
+      stateLabel: ['disconnected', 'connected', 'connecting', 'disconnecting'][dbState] || 'unknown',
+    },
   });
 });
 
