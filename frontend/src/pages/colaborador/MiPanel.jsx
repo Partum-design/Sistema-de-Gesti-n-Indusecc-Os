@@ -183,16 +183,29 @@ export default function MiPanel() {
   return (
     <main className="page">
       {/* Banner bienvenida */}
-      <div style={{ background: 'linear-gradient(135deg,var(--red-k) 0%,var(--red-d) 60%,var(--red-m) 100%)', borderRadius: 10, padding: '1.6rem 2rem', display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1.4rem', position: 'relative', overflow: 'hidden' }}>
+      <div
+        className="welcome-banner"
+        style={{
+          background: 'linear-gradient(135deg,var(--red-k) 0%,var(--red-d) 60%,var(--red-m) 100%)',
+          borderRadius: 10,
+          padding: '1.6rem 2rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1.5rem',
+          marginBottom: '1.4rem',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
         <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(45deg,transparent,transparent 28px,rgba(201,168,76,.04) 28px,rgba(201,168,76,.04) 29px)', pointerEvents: 'none' }} />
-        <div style={{ width: 58, height: 58, borderRadius: '50%', background: 'linear-gradient(135deg,var(--gold-d),var(--gold))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', fontWeight: 700, color: 'var(--red-d)', flexShrink: 0, boxShadow: '0 4px 14px rgba(0,0,0,.3)', position: 'relative', zIndex: 1 }}>{initials}</div>
-        <div style={{ flex: 1, minWidth: 0, position: 'relative', zIndex: 1 }}>
+        <div className="welcome-avatar" style={{ width: 58, height: 58, borderRadius: '50%', background: 'linear-gradient(135deg,var(--gold-d),var(--gold))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', fontWeight: 700, color: 'var(--red-d)', flexShrink: 0, boxShadow: '0 4px 14px rgba(0,0,0,.3)', position: 'relative', zIndex: 1 }}>{initials}</div>
+        <div className="welcome-main" style={{ flex: 1, minWidth: 0, position: 'relative', zIndex: 1 }}>
           <div style={{ fontSize: '.7rem', color: 'rgba(255,255,255,.38)', textTransform: 'uppercase', letterSpacing: '.15em', fontWeight: 700, marginBottom: '.2rem' }}>Bienvenido de nuevo</div>
-          <div style={{ fontFamily: "'Playfair Display',serif", fontSize: '1.4rem', fontWeight: 900, color: '#fff', lineHeight: 1.1 }}>{userName}</div>
+          <div className="welcome-title" style={{ fontFamily: "'Playfair Display',serif", fontSize: '1.4rem', fontWeight: 900, color: '#fff', lineHeight: 1.1 }}>{userName}</div>
           <div style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.4)', marginTop: '.25rem' }}>{userRole.replace('_', ' ')}</div>
         </div>
-        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '.5rem', alignItems: 'flex-end' }}>
-          <div style={{ display: 'flex', gap: '.6rem' }}>
+        <div className="welcome-actions" style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '.5rem', alignItems: 'flex-end' }}>
+          <div className="welcome-buttons" style={{ display: 'flex', gap: '.6rem' }}>
             <button className="btn btn-gold btn-sm" onClick={() => setModalPerfil(true)}>
               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" width="13"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>Mi Perfil
             </button>

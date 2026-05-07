@@ -378,6 +378,13 @@ label.lbl { font-size: .73rem; font-weight: 700; letter-spacing: .12em; text-tra
   .mg-3 { grid-template-columns: 1fr; }
   .filters-r { width: 100%; margin-left: 0; }
   .fsearch { flex: 1; min-width: 0; }
+
+  /* Colaborador: banner de bienvenida */
+  .welcome-banner { flex-wrap: wrap; padding: 1.15rem 1rem !important; gap: 1rem !important; }
+  .welcome-actions { width: 100%; align-items: flex-start !important; }
+  .welcome-buttons { width: 100%; flex-wrap: wrap; }
+  .welcome-buttons .btn { flex: 1 1 180px; justify-content: center; }
+  .welcome-title { font-size: 1.2rem !important; }
 }
 @media(max-width:480px) {
   .sg { grid-template-columns: 1fr; }
@@ -388,6 +395,8 @@ label.lbl { font-size: .73rem; font-weight: 700; letter-spacing: .12em; text-tra
   .topbar-r { gap: .45rem; }
   .tbtn { width: 32px; height: 32px; }
   .notif-panel { right: -6px; }
+
+  .welcome-buttons .btn { width: 100%; flex: 1 1 100%; }
 }
 
 /* TASK ITEMS */
