@@ -110,7 +110,7 @@ export default function ConsultorPanel() {
   return (
     <main className="page">
       {/* Banner bienvenida */}
-      <div style={{ background:'linear-gradient(135deg,var(--red-k) 0%,var(--red-d) 60%,var(--red-m) 100%)', borderRadius:10, padding:'1.8rem 2rem', display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'1.6rem', flexWrap:'wrap', gap:'1rem', position:'relative', overflow:'hidden' }}>
+      <div className="hero-banner" style={{ background:'linear-gradient(135deg,var(--red-k) 0%,var(--red-d) 60%,var(--red-m) 100%)', borderRadius:10, padding:'1.8rem 2rem', display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'1.6rem', flexWrap:'wrap', gap:'1rem', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', top:-30, right:-30, width:180, height:180, borderRadius:'50%', background:'rgba(201,168,76,.06)' }} />
         <div style={{ position:'absolute', bottom:-40, right:80, width:120, height:120, borderRadius:'50%', background:'rgba(201,168,76,.04)' }} />
         <div style={{ display:'flex', alignItems:'center', gap:16, position:'relative', zIndex:1 }}>
@@ -120,7 +120,7 @@ export default function ConsultorPanel() {
             <div style={{ fontSize:'.78rem', color:'rgba(255,255,255,.6)', marginTop:3 }}>{userRole.replace('_', ' ')} · Acceso de solo lectura y análisis</div>
           </div>
         </div>
-        <div style={{ display:'flex', gap:'.7rem', position:'relative', zIndex:1, flexWrap:'wrap' }}>
+        <div className="hero-buttons" style={{ display:'flex', gap:'.7rem', position:'relative', zIndex:1, flexWrap:'wrap' }}>
           <span style={{ display:'inline-flex', alignItems:'center', gap:6, background:'rgba(255,255,255,.1)', border:'1px solid rgba(255,255,255,.15)', borderRadius:6, padding:'6px 12px', fontSize:'.75rem', fontWeight:600, color:'rgba(255,255,255,.75)' }}>
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" width="14"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
             Solo Lectura

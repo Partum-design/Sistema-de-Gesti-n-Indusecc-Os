@@ -37,6 +37,13 @@ body { overflow-x: hidden; }
 img, svg, video, canvas { max-width: 100%; }
 button { cursor: pointer; font-family: inherit; }
 a { text-decoration: none; color: inherit; }
+table { max-width: 100%; }
+
+/* HERO / BANNERS (reusable for all roles) */
+.hero-banner { position: relative; overflow: hidden; }
+.hero-actions { min-width: 0; }
+.hero-buttons { display: flex; flex-wrap: wrap; gap: .6rem; }
+.hero-buttons .btn { max-width: 100%; }
 
 /* ── SIDEBAR ── */
 .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sw); background: var(--red-k); display: flex; flex-direction: column; z-index: 200; transition: transform .3s; }
@@ -385,6 +392,17 @@ label.lbl { font-size: .73rem; font-weight: 700; letter-spacing: .12em; text-tra
   .welcome-buttons { width: 100%; flex-wrap: wrap; }
   .welcome-buttons .btn { flex: 1 1 180px; justify-content: center; }
   .welcome-title { font-size: 1.2rem !important; }
+
+  /* Global: banners de cabecera (todos los roles) */
+  .hero-banner { padding: 1.15rem 1rem !important; gap: 1rem !important; }
+  .hero-buttons { width: 100%; }
+  .hero-buttons .btn { flex: 1 1 180px; justify-content: center; }
+
+  /* Global: tablas grandes en móvil */
+  .page table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Global: botones no deben desbordar */
+  .btn { white-space: normal; text-align: center; }
 }
 @media(max-width:480px) {
   .sg { grid-template-columns: 1fr; }
@@ -397,6 +415,7 @@ label.lbl { font-size: .73rem; font-weight: 700; letter-spacing: .12em; text-tra
   .notif-panel { right: -6px; }
 
   .welcome-buttons .btn { width: 100%; flex: 1 1 100%; }
+  .hero-buttons .btn { width: 100%; flex: 1 1 100%; }
 }
 
 /* TASK ITEMS */

@@ -184,7 +184,7 @@ export default function MiPanel() {
     <main className="page">
       {/* Banner bienvenida */}
       <div
-        className="welcome-banner"
+        className="hero-banner welcome-banner"
         style={{
           background: 'linear-gradient(135deg,var(--red-k) 0%,var(--red-d) 60%,var(--red-m) 100%)',
           borderRadius: 10,
@@ -204,8 +204,8 @@ export default function MiPanel() {
           <div className="welcome-title" style={{ fontFamily: "'Playfair Display',serif", fontSize: '1.4rem', fontWeight: 900, color: '#fff', lineHeight: 1.1 }}>{userName}</div>
           <div style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.4)', marginTop: '.25rem' }}>{userRole.replace('_', ' ')}</div>
         </div>
-        <div className="welcome-actions" style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '.5rem', alignItems: 'flex-end' }}>
-          <div className="welcome-buttons" style={{ display: 'flex', gap: '.6rem' }}>
+        <div className="hero-actions welcome-actions" style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '.5rem', alignItems: 'flex-end' }}>
+          <div className="hero-buttons welcome-buttons" style={{ display: 'flex', gap: '.6rem' }}>
             <button className="btn btn-gold btn-sm" onClick={() => setModalPerfil(true)}>
               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" width="13"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>Mi Perfil
             </button>
