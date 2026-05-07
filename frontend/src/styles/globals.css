@@ -371,7 +371,7 @@ label.lbl { font-size: .73rem; font-weight: 700; letter-spacing: .12em; text-tra
 }
 @media(max-width:768px) {
   :root { --sw: 240px; }
-  .page { padding: 1.2rem 1rem 2rem; }
+  .page { padding: 1.2rem 1rem 5.5rem; }
   .sg { grid-template-columns: 1fr 1fr; gap: .75rem; }
   .topbar { padding: 0 1rem; }
   .topbar-bc strong { max-width: 44vw; }
@@ -403,6 +403,10 @@ label.lbl { font-size: .73rem; font-weight: 700; letter-spacing: .12em; text-tra
 
   /* Global: botones no deben desbordar */
   .btn { white-space: normal; text-align: center; }
+
+  /* Tablas estilo INDUSECC */
+  .tbl { min-width: 0; }
+  .tbl th, .tbl td { white-space: normal; }
 }
 @media(max-width:480px) {
   .sg { grid-template-columns: 1fr; }
@@ -416,6 +420,8 @@ label.lbl { font-size: .73rem; font-weight: 700; letter-spacing: .12em; text-tra
 
   .welcome-buttons .btn { width: 100%; flex: 1 1 100%; }
   .hero-buttons .btn { width: 100%; flex: 1 1 100%; }
+
+  .fab { right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); width: 46px; height: 46px; }
 }
 
 /* TASK ITEMS */
