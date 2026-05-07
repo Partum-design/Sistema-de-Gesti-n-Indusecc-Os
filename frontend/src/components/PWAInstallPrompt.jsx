@@ -125,8 +125,8 @@ export default function PWAInstallPrompt() {
   if (!shouldOfferInstall && !shouldOfferPush) return null;
 
   return (
-    <div style={styles.backdrop} onClick={dismiss} role="presentation">
-      <div style={styles.wrapper} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+    <div style={styles.container} role="presentation">
+      <div style={styles.wrapper} role="dialog" aria-modal="true">
         <button type="button" onClick={dismiss} style={styles.close} aria-label="Cerrar" disabled={busy}>
           ×
         </button>
@@ -159,17 +159,19 @@ export default function PWAInstallPrompt() {
 }
 
 const styles = {
-  backdrop: {
+  container: {
     position: 'fixed',
-    inset: 0,
     zIndex: 10000,
-    display: 'grid',
-    placeItems: 'center',
-    padding: 16,
-    background: 'rgba(0,0,0,0.25)',
-    backdropFilter: 'blur(2px)',
+    right: 16,
+    bottom: 'calc(16px + env(safe-area-inset-bottom, 0px))',
+    left: 'auto',
+    top: 'auto',
+    pointerEvents: 'none',
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
   wrapper: {
+    pointerEvents: 'auto',
     width: 'min(340px, calc(100vw - 24px))',
     background: '#4c0910',
     color: '#fff',
